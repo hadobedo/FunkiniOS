@@ -11,11 +11,17 @@ import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import lime.net.curl.CURLCode;
+import flixel.ui.FlxVirtualPad;
+import flixel.FlxCamera;
 
 using StringTools;
 
 class StoryMenuState extends MusicBeatState
+
 {
+	private var camHUD:FlxCamera;
+	private var camGame:FlxCamera;
+
 	var scoreText:FlxText;
 
 	var weekData:Array<Dynamic> = [
@@ -69,6 +75,15 @@ class StoryMenuState extends MusicBeatState
 
 	override function create()
 	{
+		camHUD = new FlxCamera();
+		camGame = new FlxCamera();
+		camHUD.bgColor.alpha = 0;
+
+		FlxG.cameras.reset(camGame);
+		FlxG.cameras.add(camHUD);
+
+		FlxCamera.defaultCameras = [camGame];
+
 		if (FlxG.sound.music != null)
 		{
 			if (!FlxG.sound.music.playing)
@@ -208,6 +223,11 @@ class StoryMenuState extends MusicBeatState
 		trace("Line 165");
 
 		super.create();
+
+		VirtualPadCamera.VPadCamera();
+		add(VirtualPadCamera._pad);
+		VirtualPadCamera._pad.cameras = [camHUD];
+
 	}
 
 	override function update(elapsed:Float)
@@ -229,43 +249,54 @@ class StoryMenuState extends MusicBeatState
 			lock.y = grpWeekText.members[lock.ID].y;
 		});
 
+		var UP_P = VirtualPadCamera._pad.buttonUp.justPressed;
+		var RIGHT_P = VirtualPadCamera._pad.buttonRight.justPressed;
+		var DOWN_P = VirtualPadCamera._pad.buttonDown.justPressed;
+		var LEFT_P = VirtualPadCamera._pad.buttonLeft.justPressed;
+		
+		var RIGHT = VirtualPadCamera._pad.buttonRight.pressed;
+		var LEFT = VirtualPadCamera._pad.buttonLeft.pressed;
+
+		var ACCEPT = VirtualPadCamera._pad.buttonA.justPressed;
+		var BACK = VirtualPadCamera._pad.buttonB.justPressed;
+
 		if (!movedBack)
 		{
 			if (!selectedWeek)
 			{
-				if (controls.UP_P)
+				if (UP_P)
 				{
 					changeWeek(-1);
 				}
 
-				if (controls.DOWN_P)
+				if (DOWN_P)
 				{
 					changeWeek(1);
 				}
 
-				if (controls.RIGHT)
+				if (RIGHT)
 					rightArrow.animation.play('press')
 				else
 					rightArrow.animation.play('idle');
 
-				if (controls.LEFT)
+				if (LEFT)
 					leftArrow.animation.play('press');
 				else
 					leftArrow.animation.play('idle');
 
-				if (controls.RIGHT_P)
+				if (RIGHT_P)
 					changeDifficulty(1);
-				if (controls.LEFT_P)
+				if (LEFT_P)
 					changeDifficulty(-1);
 			}
 
-			if (controls.ACCEPT)
+			if (ACCEPT)
 			{
 				selectWeek();
 			}
 		}
 
-		if (controls.BACK && !movedBack && !selectedWeek)
+		if (BACK  && !movedBack && !selectedWeek)
 		{
 			FlxG.sound.play('assets/sounds/cancelMenu' + TitleState.soundExt);
 			movedBack = true;
@@ -273,6 +304,18 @@ class StoryMenuState extends MusicBeatState
 		}
 
 		super.update(elapsed);
+
+		switch(VirtualPadCamera.iOSDevice) {
+			case 1: // iPhone SE
+				camHUD.zoom = 2.0;
+
+			case 2: // iPhone X
+				camHUD.zoom = 3.9;
+			case 3: // iPhone X
+				camHUD.zoom = 2.35;
+			default: // idk wtf device ur using oops
+				camHUD.zoom = 1.0;
+		}
 	}
 
 	var movedBack:Bool = false;

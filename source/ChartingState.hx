@@ -126,8 +126,9 @@ class ChartingState extends MusicBeatState
 				validScore: false
 			};
 		}
-
+		#if !mobile
 		FlxG.mouse.visible = true;
+		#end
 		FlxG.save.bind('funkin', 'ninjamuffin99');
 
 		tempBpm = _song.bpm;
@@ -480,7 +481,7 @@ class ChartingState extends MusicBeatState
 
 		FlxG.watch.addQuick('daBeat', curBeat);
 		FlxG.watch.addQuick('daStep', curStep);
-
+		#if !mobile
 		if (FlxG.mouse.justPressed)
 		{
 			if (FlxG.mouse.overlaps(curRenderedNotes))
@@ -648,7 +649,7 @@ class ChartingState extends MusicBeatState
 			changeSection(curSection + shiftThing);
 		if (FlxG.keys.justPressed.LEFT || FlxG.keys.justPressed.A)
 			changeSection(curSection - shiftThing);
-
+		#end
 		bpmTxt.text = bpmTxt.text = Std.string(FlxMath.roundDecimal(Conductor.songPosition / 1000, 2))
 			+ " / "
 			+ Std.string(FlxMath.roundDecimal(FlxG.sound.music.length / 1000, 2))

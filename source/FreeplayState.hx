@@ -1,19 +1,21 @@
 package;
 
-import flash.text.TextField;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.addons.display.FlxGridOverlay;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
-import lime.utils.Assets;
+import flixel.ui.FlxVirtualPad;
+import flixel.FlxCamera;
 
 using StringTools;
 
 class FreeplayState extends MusicBeatState
 {
+	private var camHUD:FlxCamera;
+	private var camGame:FlxCamera;
+
 	var songs:Array<String> = [];
 
 	var selector:FlxText;
@@ -30,6 +32,15 @@ class FreeplayState extends MusicBeatState
 
 	override function create()
 	{
+		camHUD = new FlxCamera();
+		camGame = new FlxCamera();
+		camHUD.bgColor.alpha = 0;
+
+		FlxG.cameras.reset(camGame);
+		FlxG.cameras.add(camHUD);
+
+		FlxCamera.defaultCameras = [camGame];
+
 		songs = CoolUtil.coolTextFile('assets/data/freeplaySonglist.txt');
 
 		/* 
@@ -148,11 +159,27 @@ class FreeplayState extends MusicBeatState
 		 */
 
 		super.create();
+
+		VirtualPadCamera.VPadCamera();
+		add(VirtualPadCamera._pad);
+		VirtualPadCamera._pad.cameras = [camHUD];
 	}
 
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
+
+		switch(VirtualPadCamera.iOSDevice) {
+			case 1: // iPhone SE
+				camHUD.zoom = 2.0;
+
+			case 2: // iPhone X
+				camHUD.zoom = 3.9;
+			case 3: // iPhone X
+				camHUD.zoom = 2.35;
+			default: // idk wtf device ur using oops
+				camHUD.zoom = 1.0;
+		}
 
 		if (FlxG.sound.music.volume < 0.7)
 		{
@@ -165,10 +192,13 @@ class FreeplayState extends MusicBeatState
 			lerpScore = intendedScore;
 
 		scoreText.text = "PERSONAL BEST:" + lerpScore;
-
-		var upP = controls.UP_P;
-		var downP = controls.DOWN_P;
-		var accepted = controls.ACCEPT;
+	
+		var upP = VirtualPadCamera._pad.buttonUp.justPressed;
+		var downP = VirtualPadCamera._pad.buttonDown.justPressed;
+		var LEFT_P = VirtualPadCamera._pad.buttonLeft.justPressed;
+		var RIGHT_P = VirtualPadCamera._pad.buttonRight.justPressed;
+		var accepted = VirtualPadCamera._pad.buttonA.justPressed;
+		var BACK = VirtualPadCamera._pad.buttonB.justPressed;
 
 		if (upP)
 		{
@@ -179,12 +209,12 @@ class FreeplayState extends MusicBeatState
 			changeSelection(1);
 		}
 
-		if (controls.LEFT_P)
+		if (LEFT_P)
 			changeDiff(-1);
-		if (controls.RIGHT_P)
+		if (RIGHT_P)
 			changeDiff(1);
 
-		if (controls.BACK)
+		if (BACK)
 		{
 			FlxG.switchState(new MainMenuState());
 		}
@@ -230,9 +260,9 @@ class FreeplayState extends MusicBeatState
 
 	function changeSelection(change:Int = 0)
 	{
-		#if !switch
-		NGio.logEvent('Fresh');
-		#end
+		// #if !switch
+		// NGio.logEvent('Fresh');
+		// #end
 
 		// NGio.logEvent('Fresh');
 		FlxG.sound.play('assets/sounds/scrollMenu' + TitleState.soundExt, 0.4);

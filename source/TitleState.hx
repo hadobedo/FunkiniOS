@@ -2,8 +2,6 @@ package;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.FlxState;
-import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileDiamond;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.addons.transition.TransitionData;
@@ -13,15 +11,10 @@ import flixel.group.FlxGroup;
 import flixel.input.gamepad.FlxGamepad;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
-import flixel.system.FlxSound;
-import flixel.system.ui.FlxSoundTray;
-import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
-import io.newgrounds.NG;
-import lime.app.Application;
 import openfl.Assets;
 import polymod.Polymod;
 
@@ -58,12 +51,12 @@ class TitleState extends MusicBeatState
 
 		super.create();
 
-		NGio.noLogin(APIStuff.API);
+		// NGio.noLogin(APIStuff.API);
 
-		#if ng
-		var ng:NGio = new NGio(APIStuff.API, APIStuff.EncKey);
-		trace('NEWGROUNDS LOL');
-		#end
+		// #if ng
+		// var ng:NGio = new NGio(APIStuff.API, APIStuff.EncKey);
+		// trace('NEWGROUNDS LOL');
+		// #end
 
 		FlxG.save.bind('funkin', 'ninjamuffin99');
 
@@ -99,6 +92,10 @@ class TitleState extends MusicBeatState
 
 	function startIntro()
 	{
+
+		trace(FlxG.width + " is detected width");
+		trace(FlxG.height + " is detected height");
+
 		if (!initialized)
 		{
 			var diamond:FlxGraphic = FlxGraphic.fromClass(GraphicTransTileDiamond);
@@ -133,9 +130,24 @@ class TitleState extends MusicBeatState
 		// bg.antialiasing = true;
 		// bg.setGraphicSize(Std.int(bg.width * 0.6));
 		// bg.updateHitbox();
+
+		// iPhone X
+		if (FlxG.width == 2436 && FlxG.height == 1125) {
+			logoBl = new FlxSprite(-150, -100);
+			logoBl.scale.set(1.4, 1.4);
+			gfDance = new FlxSprite(FlxG.width * 0.55, FlxG.height * 0.23);
+			gfDance.scale.set(1.75, 1.75);
+			titleText = new FlxSprite(100, FlxG.height * 0.8);
+			titleText.scale.set(1.5, 1.5);
+		} else {
+			logoBl = new FlxSprite(-150, -100);
+			gfDance = new FlxSprite(FlxG.width * 0.4, FlxG.height * 0.07);
+			titleText = new FlxSprite(100, FlxG.height * 0.8);
+		}
+
+
 		add(bg);
 
-		logoBl = new FlxSprite(-150, -100);
 		logoBl.frames = FlxAtlasFrames.fromSparrow('assets/images/logoBumpin.png', 'assets/images/logoBumpin.xml');
 		logoBl.antialiasing = true;
 		logoBl.animation.addByPrefix('bump', 'logo bumpin', 24);
@@ -144,7 +156,6 @@ class TitleState extends MusicBeatState
 		// logoBl.screenCenter();
 		// logoBl.color = FlxColor.BLACK;
 
-		gfDance = new FlxSprite(FlxG.width * 0.4, FlxG.height * 0.07);
 		gfDance.frames = FlxAtlasFrames.fromSparrow('assets/images/gfDanceTitle.png', 'assets/images/gfDanceTitle.xml');
 		gfDance.animation.addByIndices('danceLeft', 'gfDance', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
 		gfDance.animation.addByIndices('danceRight', 'gfDance', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
@@ -152,7 +163,7 @@ class TitleState extends MusicBeatState
 		add(gfDance);
 		add(logoBl);
 
-		titleText = new FlxSprite(100, FlxG.height * 0.8);
+
 		titleText.frames = FlxAtlasFrames.fromSparrow('assets/images/titleEnter.png', 'assets/images/titleEnter.xml');
 		titleText.animation.addByPrefix('idle', "Press Enter to Begin", 24);
 		titleText.animation.addByPrefix('press', "ENTER PRESSED", 24);
@@ -177,7 +188,7 @@ class TitleState extends MusicBeatState
 		blackScreen = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		credGroup.add(blackScreen);
 
-		credTextShit = new Alphabet(0, 0, "ninjamuffin99\nPhantomArcade\nkawaisprite\nevilsk8er", true);
+		credTextShit = new Alphabet(0, 0, "ninjamuffin99\nPhantomArcade\nkawaisprite\nevilsk8er\nported to ios by nickblend", true);
 		credTextShit.screenCenter();
 
 		// credTextShit.alignment = CENTER;
@@ -193,9 +204,9 @@ class TitleState extends MusicBeatState
 		ngSpr.antialiasing = true;
 
 		FlxTween.tween(credTextShit, {y: credTextShit.y + 20}, 2.9, {ease: FlxEase.quadInOut, type: PINGPONG});
-
+		#if desktop
 		FlxG.mouse.visible = false;
-
+		#end
 		if (initialized)
 			skipIntro();
 		else
@@ -225,13 +236,25 @@ class TitleState extends MusicBeatState
 	{
 		Conductor.songPosition = FlxG.sound.music.time;
 		// FlxG.watch.addQuick('amp', FlxG.sound.music.amplitude);
-
+		#if desktop
 		if (FlxG.keys.justPressed.F)
 		{
 			FlxG.fullscreen = !FlxG.fullscreen;
 		}
+		#end
 
-		var pressedEnter:Bool = FlxG.keys.justPressed.ENTER;
+		var pressedEnter:Bool = false;
+
+		#if desktop
+		pressedEnter:Bool = FlxG.keys.justPressed.ENTER;
+		#end
+		
+		#if mobile
+		for (touch in FlxG.touches.list)
+			if (touch.justPressed) {
+				pressedEnter = true;
+			}
+		#end
 
 		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
 
@@ -249,11 +272,11 @@ class TitleState extends MusicBeatState
 		if (pressedEnter && !transitioning && skippedIntro)
 		{
 			#if !switch
-			NGio.unlockMedal(60960);
+			// NGio.unlockMedal(60960);
 
 			// If it's Friday according to da clock
 			if (Date.now().getDay() == 5)
-				NGio.unlockMedal(61034);
+				// NGio.unlockMedal(61034);
 			#end
 
 			titleText.animation.play('press');
@@ -266,19 +289,29 @@ class TitleState extends MusicBeatState
 
 			new FlxTimer().start(2, function(tmr:FlxTimer)
 			{
+
+				#if desktop
 				// Check if version is outdated
 
 				var version:String = "v" + Application.current.meta.get('version');
 
 				if (version.trim() != NGio.GAME_VER.trim() && !OutdatedSubState.leftState)
 				{
-					trace('OLD VERSION!');
-					FlxG.switchState(new OutdatedSubState());
+				trace('OLD VERSION!');
+				FlxG.switchState(new OutdatedSubState());
 				}
-				else
+				 else
 				{
-					FlxG.switchState(new MainMenuState());
+				FlxG.switchState(new MainMenuState());
 				}
+				#end
+
+				#if mobile
+				FlxG.switchState(new MainMenuState());
+				#end
+
+				FlxG.switchState(new MainMenuState());
+
 			});
 			// FlxG.sound.play('assets/music/titleShoot' + TitleState.soundExt, 0.7);
 		}
@@ -338,7 +371,7 @@ class TitleState extends MusicBeatState
 		switch (curBeat)
 		{
 			case 1:
-				createCoolText(['ninjamuffin99', 'phantomArcade', 'kawaisprite', 'evilsk8er']);
+				createCoolText(['ninjamuffin99', 'phantomArcade', 'kawaisprite', 'evilsk8er', 'ported by nickblend']);
 			// credTextShit.visible = true;
 			case 3:
 				addMoreText('present');
@@ -401,3 +434,4 @@ class TitleState extends MusicBeatState
 		}
 	}
 }
+

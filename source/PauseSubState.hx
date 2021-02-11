@@ -1,11 +1,8 @@
 package;
 
-import Controls.Control;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.FlxSubState;
 import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.input.keyboard.FlxKey;
 import flixel.system.FlxSound;
 import flixel.util.FlxColor;
 
@@ -84,11 +81,13 @@ class PauseSubState extends MusicBeatSubstate
 			}
 		}
 
+		#if !mobile
 		if (FlxG.keys.justPressed.J)
 		{
 			// for reference later!
 			// PlayerSettings.player1.controls.replaceBinding(Control.LEFT, Keys, FlxKey.J, null);
 		}
+		#end
 	}
 
 	override function destroy()

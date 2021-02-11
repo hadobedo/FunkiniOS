@@ -1,5 +1,7 @@
 package;
 
+import Controls.Control;
+import Controls.Action;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
@@ -10,15 +12,23 @@ import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
-import io.newgrounds.NG;
+import flixel.ui.FlxVirtualPad;
+import flixel.FlxState;
+// import io.newgrounds.NG;
 import lime.app.Application;
+import VirtualPadCamera.VirtualPadCamera;
+import flixel.FlxCamera;
 
 using StringTools;
 
 class MainMenuState extends MusicBeatState
 {
-	var curSelected:Int = 0;
 
+	private var camHUD:FlxCamera;
+	private var camGame:FlxCamera;
+
+
+	var curSelected:Int = 0;
 	var menuItems:FlxTypedGroup<FlxSprite>;
 
 	#if !switch
@@ -32,6 +42,15 @@ class MainMenuState extends MusicBeatState
 
 	override function create()
 	{
+		camHUD = new FlxCamera();
+		camGame = new FlxCamera();
+		camHUD.bgColor.alpha = 0;
+
+		FlxG.cameras.reset(camGame);
+		FlxG.cameras.add(camHUD);
+
+		FlxCamera.defaultCameras = [camGame];
+
 		if (!FlxG.sound.music.playing)
 		{
 			FlxG.sound.playMusic('assets/music/freakyMenu' + TitleState.soundExt);
@@ -94,37 +113,49 @@ class MainMenuState extends MusicBeatState
 		changeItem();
 
 		super.create();
+
+		if (FlxG.sound.music.volume < 0.8)
+		{
+			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
+		}
+
+		VirtualPadCamera.VPadCamera();
+		add(VirtualPadCamera._pad);
+		VirtualPadCamera._pad.cameras = [camHUD];
+	
 	}
 
 	var selectedSomethin:Bool = false;
 
 	override function update(elapsed:Float)
 	{
-		if (FlxG.sound.music.volume < 0.8)
-		{
-			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
-		}
 
 		if (!selectedSomethin)
 		{
-			if (controls.UP_P)
+
+			var UP_P = VirtualPadCamera._pad.buttonUp.justPressed;
+			var DOWN_P = VirtualPadCamera._pad.buttonDown.justPressed;
+			var BACK = VirtualPadCamera._pad.buttonB.justPressed;
+			var ACCEPT = VirtualPadCamera._pad.buttonA.justPressed;
+
+			if (UP_P)
 			{
 				FlxG.sound.play('assets/sounds/scrollMenu' + TitleState.soundExt);
 				changeItem(-1);
 			}
 
-			if (controls.DOWN_P)
+			if (DOWN_P)
 			{
 				FlxG.sound.play('assets/sounds/scrollMenu' + TitleState.soundExt);
 				changeItem(1);
 			}
 
-			if (controls.BACK)
+			if (BACK)
 			{
 				FlxG.switchState(new TitleState());
 			}
 
-			if (controls.ACCEPT)
+			if (ACCEPT)
 			{
 				if (optionShit[curSelected] == 'donate')
 				{
@@ -180,6 +211,18 @@ class MainMenuState extends MusicBeatState
 		}
 
 		super.update(elapsed);
+		switch(VirtualPadCamera.iOSDevice) {
+			case 1: // iPhone SE
+				camHUD.zoom = 2.0;
+
+			case 2: // iPhone X
+				camHUD.zoom = 3.9;
+			case 3: // iPhone X
+				camHUD.zoom = 2.35;
+			default: // idk wtf device ur using oops
+				camHUD.zoom = 1.0;
+		}
+
 
 		menuItems.forEach(function(spr:FlxSprite)
 		{

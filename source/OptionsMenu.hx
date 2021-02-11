@@ -74,10 +74,12 @@ class OptionsMenu extends MusicBeatState
 
 	function waitingInput():Void
 	{
+		#if !mobile
 		if (FlxG.keys.getIsDown().length > 0)
 		{
 			PlayerSettings.player1.controls.replaceBinding(Control.LEFT, Keys, FlxG.keys.getIsDown()[0].ID, null);
 		}
+		#end
 		// PlayerSettings.player1.controls.replaceBinding(Control)
 	}
 
@@ -93,9 +95,9 @@ class OptionsMenu extends MusicBeatState
 
 	function changeSelection(change:Int = 0)
 	{
-		#if !switch
-		NGio.logEvent('Fresh');
-		#end
+		// #if !switch
+		// NGio.logEvent('Fresh');
+		// #end
 
 		FlxG.sound.play('assets/sounds/scrollMenu' + TitleState.soundExt, 0.4);
 

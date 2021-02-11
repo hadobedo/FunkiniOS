@@ -2,42 +2,27 @@ package;
 
 import Section.SwagSection;
 import Song.SwagSong;
-import WiggleEffect.WiggleEffectType;
-import flixel.FlxBasic;
 import flixel.FlxCamera;
 import flixel.FlxG;
-import flixel.FlxGame;
 import flixel.FlxObject;
 import flixel.FlxSprite;
-import flixel.FlxState;
 import flixel.FlxSubState;
-import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.effects.FlxTrail;
-import flixel.addons.effects.FlxTrailArea;
-import flixel.addons.effects.chainable.FlxEffectSprite;
 import flixel.addons.effects.chainable.FlxWaveEffect;
 import flixel.addons.transition.FlxTransitionableState;
-import flixel.graphics.atlas.FlxAtlas;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
-import flixel.math.FlxRect;
 import flixel.system.FlxSound;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.ui.FlxBar;
-import flixel.util.FlxCollision;
 import flixel.util.FlxColor;
 import flixel.util.FlxSort;
-import flixel.util.FlxStringUtil;
 import flixel.util.FlxTimer;
-import haxe.Json;
-import lime.utils.Assets;
-import openfl.display.BlendMode;
-import openfl.display.StageQuality;
-import openfl.filters.ShaderFilter;
+import flixel.util.FlxSave;
 
 using StringTools;
 
@@ -88,6 +73,7 @@ class PlayState extends MusicBeatState
 	private var iconP2:HealthIcon;
 	private var camHUD:FlxCamera;
 	private var camGame:FlxCamera;
+	private var camControlHUD:FlxCamera;
 
 	var dialogue:Array<String> = ['blah blah blah', 'coolswag'];
 
@@ -122,14 +108,19 @@ class PlayState extends MusicBeatState
 
 	var inCutscene:Bool = false;
 
+	var _saveconrtol:FlxSave;
+
 	override public function create()
 	{
 		// var gameCam:FlxCamera = FlxG.camera;
 		camGame = new FlxCamera();
 		camHUD = new FlxCamera();
+		camControlHUD = new FlxCamera();
+		camControlHUD.bgColor.alpha = 0;
 		camHUD.bgColor.alpha = 0;
 
 		FlxG.cameras.reset(camGame);
+		FlxG.cameras.add(camControlHUD);
 		FlxG.cameras.add(camHUD);
 
 		FlxCamera.defaultCameras = [camGame];
@@ -633,6 +624,8 @@ class PlayState extends MusicBeatState
 		strumLineNotes = new FlxTypedGroup<FlxSprite>();
 		add(strumLineNotes);
 
+
+
 		playerStrums = new FlxTypedGroup<FlxSprite>();
 
 		// startCountdown();
@@ -712,6 +705,7 @@ class PlayState extends MusicBeatState
 					add(blackScreen);
 					blackScreen.scrollFactor.set();
 					camHUD.visible = false;
+					camControlHUD.visible = false;
 
 					new FlxTimer().start(0.1, function(tmr:FlxTimer)
 					{
@@ -725,6 +719,7 @@ class PlayState extends MusicBeatState
 						new FlxTimer().start(0.8, function(tmr:FlxTimer)
 						{
 							camHUD.visible = true;
+							camControlHUD.visible = true;
 							remove(blackScreen);
 							FlxTween.tween(FlxG.camera, {zoom: defaultCamZoom}, 2.5, {
 								ease: FlxEase.quadInOut,
@@ -756,6 +751,11 @@ class PlayState extends MusicBeatState
 		}
 
 		super.create();
+
+		VirtualPadCamera.VPadCamera();
+		add(VirtualPadCamera._pad);
+		VirtualPadCamera._pad.cameras = [camControlHUD];
+
 	}
 
 	function schoolIntro(?dialogueBox:DialogueBox):Void
@@ -1271,7 +1271,7 @@ class PlayState extends MusicBeatState
 		#if !debug
 		perfectMode = false;
 		#end
-
+		/*
 		if (FlxG.keys.justPressed.NINE)
 		{
 			if (iconP1.animation.curAnim.name == 'bf-old')
@@ -1279,7 +1279,7 @@ class PlayState extends MusicBeatState
 			else
 				iconP1.animation.play('bf-old');
 		}
-
+		*/
 		switch (curStage)
 		{
 			case 'philly':
@@ -1297,9 +1297,25 @@ class PlayState extends MusicBeatState
 		}
 
 		super.update(elapsed);
+		switch(VirtualPadCamera.iOSDevice) {
+			case 1: // iPhone SE
+		 		camControlHUD.zoom = 2.0;
+			case 2: // iPhone X
+				camControlHUD.zoom = 3.9;
+				camGame.zoom = 1.8;
+				camHUD.setPosition(150, 40);
+				camHUD.zoom = 1.2;
+			case 3: // iPhone 6/7/8/SE2
+				camControlHUD.zoom = 2.35;
+			default: // idk wtf device ur using oops
+				camControlHUD.zoom = 1.0;
+		}
+
+
 
 		scoreTxt.text = "Score:" + songScore;
-
+		//FlxG.keys.justPressed.ENTER
+		#if !mobile
 		if (FlxG.keys.justPressed.ENTER && startedCountdown && canPause)
 		{
 			persistentUpdate = false;
@@ -1308,12 +1324,13 @@ class PlayState extends MusicBeatState
 
 			openSubState(new PauseSubState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
 		}
-
+		#end
+		/*
 		if (FlxG.keys.justPressed.SEVEN)
 		{
 			FlxG.switchState(new ChartingState());
 		}
-
+		*/
 		// FlxG.watch.addQuick('VOL', vocals.amplitudeLeft);
 		// FlxG.watch.addQuick('VOLRight', vocals.amplitudeRight);
 
@@ -1343,12 +1360,12 @@ class PlayState extends MusicBeatState
 
 		/* if (FlxG.keys.justPressed.NINE)
 			FlxG.switchState(new Charting()); */
-
+		/*
 		#if debug
 		if (FlxG.keys.justPressed.EIGHT)
 			FlxG.switchState(new AnimationDebug(SONG.player2));
 		#end
-
+		*/
 		if (startingSong)
 		{
 			if (startedCountdown)
@@ -1548,7 +1565,7 @@ class PlayState extends MusicBeatState
 							altAnim = '-alt';
 					}
 
-					trace("DA ALT THO?: " + SONG.notes[Math.floor(curStep / 16)].altAnim);
+					// trace("DA ALT THO?: " + SONG.notes[Math.floor(curStep / 16)].altAnim); i'm sorry little one
 
 					switch (Math.abs(daNote.noteData))
 					{
@@ -1599,8 +1616,10 @@ class PlayState extends MusicBeatState
 			keyShit();
 
 		#if debug
+		#if !mobile
 		if (FlxG.keys.justPressed.ONE)
 			endSong();
+		#end
 		#end
 	}
 
@@ -1633,7 +1652,7 @@ class PlayState extends MusicBeatState
 
 				if (SONG.validScore)
 				{
-					NGio.unlockMedal(60961);
+					//NGio.unlockMedal(60961);
 					Highscore.saveWeekScore(storyWeek, campaignScore, storyDifficulty);
 				}
 
@@ -1660,6 +1679,7 @@ class PlayState extends MusicBeatState
 					blackShit.scrollFactor.set();
 					add(blackShit);
 					camHUD.visible = false;
+					camControlHUD.visible = false;
 
 					FlxG.sound.play('assets/sounds/Lights_Shut_off' + TitleState.soundExt);
 				}
@@ -1846,20 +1866,21 @@ class PlayState extends MusicBeatState
 	private function keyShit():Void
 	{
 		// HOLDING
-		var up = controls.UP;
-		var right = controls.RIGHT;
-		var down = controls.DOWN;
-		var left = controls.LEFT;
+		var up = VirtualPadCamera._pad.buttonUp.pressed;
+		var right = VirtualPadCamera._pad.buttonRight.pressed;
+		var down = VirtualPadCamera._pad.buttonDown.pressed;
+		var left = VirtualPadCamera._pad.buttonLeft.pressed;
 
-		var upP = controls.UP_P;
-		var rightP = controls.RIGHT_P;
-		var downP = controls.DOWN_P;
-		var leftP = controls.LEFT_P;
+		var upP = VirtualPadCamera._pad.buttonUp.justPressed;
+		var rightP = VirtualPadCamera._pad.buttonRight.justPressed;
+		var downP = VirtualPadCamera._pad.buttonDown.justPressed;
+		var leftP = VirtualPadCamera._pad.buttonLeft.justPressed;
 
-		var upR = controls.UP_R;
-		var rightR = controls.RIGHT_R;
-		var downR = controls.DOWN_R;
-		var leftR = controls.LEFT_R;
+		var upR = VirtualPadCamera._pad.buttonUp.justReleased;
+		var rightR = VirtualPadCamera._pad.buttonRight.justReleased;
+		var downR = VirtualPadCamera._pad.buttonDown.justReleased;
+		var leftR = VirtualPadCamera._pad.buttonLeft.justReleased;
+
 
 		var controlArray:Array<Bool> = [leftP, downP, upP, rightP];
 
@@ -2078,10 +2099,10 @@ class PlayState extends MusicBeatState
 	{
 		// just double pasting this shit cuz fuk u
 		// REDO THIS SYSTEM!
-		var upP = controls.UP_P;
-		var rightP = controls.RIGHT_P;
-		var downP = controls.DOWN_P;
-		var leftP = controls.LEFT_P;
+		var upP = VirtualPadCamera._pad.buttonUp.justPressed;
+		var rightP = VirtualPadCamera._pad.buttonRight.justPressed;
+		var downP = VirtualPadCamera._pad.buttonDown.justPressed;
+		var leftP = VirtualPadCamera._pad.buttonLeft.justPressed;
 
 		if (leftP)
 			noteMiss(0);

@@ -112,7 +112,7 @@ class AnimationDebug extends FlxState
 	override function update(elapsed:Float)
 	{
 		textAnim.text = char.animation.curAnim.name;
-
+#if !mobile
 		if (FlxG.keys.justPressed.E)
 			FlxG.camera.zoom += 0.25;
 		if (FlxG.keys.justPressed.Q)
@@ -169,6 +169,7 @@ class AnimationDebug extends FlxState
 		var leftP = FlxG.keys.anyJustPressed([LEFT]);
 
 		var holdShift = FlxG.keys.pressed.SHIFT;
+		#end
 		var multiplier = 1;
 		if (holdShift)
 			multiplier = 10;
