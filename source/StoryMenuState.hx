@@ -311,8 +311,10 @@ class StoryMenuState extends MusicBeatState
 
 			case 2: // iPhone X
 				camHUD.zoom = 3.9;
-			case 3: // iPhone X
+			case 3: // iPhone 6/7/8/SE2
 				camHUD.zoom = 2.35;
+			case 4: // iPhone XR
+				camHUD.zoom = 2.15;
 			default: // idk wtf device ur using oops
 				camHUD.zoom = 1.0;
 		}

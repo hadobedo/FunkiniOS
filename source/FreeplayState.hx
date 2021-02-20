@@ -97,6 +97,12 @@ class FreeplayState extends MusicBeatState
 		// LOAD CHARACTERS
 
 		var bg:FlxSprite = new FlxSprite().loadGraphic('assets/images/menuBGBlue.png');
+		// more hardcoding yuck
+		if (FlxG.width == 2436 && FlxG.height == 1125) {
+			bg.setGraphicSize(2436, 1327);
+		}
+		bg.updateHitbox();
+		bg.screenCenter();
 		add(bg);
 
 		grpSongs = new FlxTypedGroup<Alphabet>();
@@ -172,11 +178,12 @@ class FreeplayState extends MusicBeatState
 		switch(VirtualPadCamera.iOSDevice) {
 			case 1: // iPhone SE
 				camHUD.zoom = 2.0;
-
 			case 2: // iPhone X
 				camHUD.zoom = 3.9;
 			case 3: // iPhone X
 				camHUD.zoom = 2.35;
+			case 4: // iPhone XR
+				camHUD.zoom = 2.15;	
 			default: // idk wtf device ur using oops
 				camHUD.zoom = 1.0;
 		}

@@ -1,8 +1,10 @@
 package;
 
+import flixel.system.FlxAssets;
 import flixel.FlxSprite;
 import flixel.animation.FlxBaseAnimation;
 import flixel.graphics.frames.FlxAtlasFrames;
+import flixel.FlxG;
 
 using StringTools;
 
@@ -138,25 +140,44 @@ class Character extends FlxSprite
 				addOffset("singDOWN", 0, -30);
 
 				playAnim('idle');
+
 			case 'spooky':
-				tex = FlxAtlasFrames.fromSparrow('assets/images/spooky_kids_assets.png', 'assets/images/spooky_kids_assets.xml');
-				frames = tex;
-				animation.addByPrefix('singUP', 'spooky UP NOTE', 24, false);
-				animation.addByPrefix('singDOWN', 'spooky DOWN note', 24, false);
-				animation.addByPrefix('singLEFT', 'note sing left', 24, false);
-				animation.addByPrefix('singRIGHT', 'spooky sing right', 24, false);
-				animation.addByIndices('danceLeft', 'spooky dance idle', [0, 2, 6], "", 12, false);
-				animation.addByIndices('danceRight', 'spooky dance idle', [8, 10, 12, 14], "", 12, false);
+				// tex = FlxAtlasFrames.fromSparrow('assets/images/spooky_kids_assets.png', 'assets/images/spooky_kids_assets.xml');
+				// frames = tex;
+				// animation.addByPrefix('singUP', 'spooky UP NOTE', 24, false);
+				// animation.addByPrefix('singDOWN', 'spooky DOWN note', 24, false);
+				// animation.addByPrefix('singLEFT', 'note sing left', 24, false);
+				// animation.addByPrefix('singRIGHT', 'spooky sing right', 24, false);
+				// animation.addByIndices('danceLeft', 'spooky dance idle', [0, 2, 6], "", 12, false);
+				// animation.addByIndices('danceRight', 'spooky dance idle', [8, 10, 12, 14], "", 12, false);
 
-				addOffset('danceLeft');
-				addOffset('danceRight');
+				// addOffset('danceLeft');
+				// addOffset('danceRight');
 
-				addOffset("singUP", -20, 26);
-				addOffset("singRIGHT", -130, -14);
-				addOffset("singLEFT", 130, -10);
-				addOffset("singDOWN", -50, -130);
+				// addOffset("singUP", -20, 26);
+				// addOffset("singRIGHT", -130, -14);
+				// addOffset("singLEFT", 130, -10);
+				// addOffset("singDOWN", -50, -130);
 
-				playAnim('danceRight');
+				// playAnim('danceRight');
+
+				frames = FlxAtlasFrames.fromSparrow('assets/images/weeb/senpai.png', 'assets/images/weeb/senpai.xml');
+				animation.addByPrefix('idle', 'Senpai Idle', 24, false);
+				animation.addByPrefix('singUP', 'SENPAI UP NOTE', 24, false);
+				animation.addByPrefix('singLEFT', 'SENPAI LEFT NOTE', 24, false);
+				animation.addByPrefix('singRIGHT', 'SENPAI RIGHT NOTE', 24, false);
+				animation.addByPrefix('singDOWN', 'SENPAI DOWN NOTE', 24, false);
+
+				addOffset('idle');
+				addOffset("singUP", 5, 37);
+				addOffset("singRIGHT");
+				addOffset("singLEFT", 40);
+				addOffset("singDOWN", 14);
+
+				playAnim('idle');
+
+				setGraphicSize(Std.int(width * 6));
+				updateHitbox();
 			case 'mom':
 				tex = FlxAtlasFrames.fromSparrow('assets/images/Mom_Assets.png', 'assets/images/Mom_Assets.xml');
 				frames = tex;
@@ -470,8 +491,7 @@ class Character extends FlxSprite
 				antialiasing = false;
 
 			case 'parents-christmas':
-				frames = FlxAtlasFrames.fromSparrow('assets/images/christmas/mom_dad_christmas_assets.png',
-					'assets/images/christmas/mom_dad_christmas_assets.xml');
+				frames = FlxAtlasFrames.fromSparrow('assets/images/christmas/mom_dad_christmas_assets.png', 'assets/images/christmas/mom_dad_christmas_assets.xml');
 				animation.addByPrefix('idle', 'Parent Christmas Idle', 24, false);
 				animation.addByPrefix('singUP', 'Parent Up Note Dad', 24, false);
 				animation.addByPrefix('singDOWN', 'Parent Down Note Dad', 24, false);
@@ -495,6 +515,8 @@ class Character extends FlxSprite
 				addOffset("singDOWN-alt", -30, -27);
 
 				playAnim('idle');
+				antialiasing = false;
+
 		}
 
 		dance();
@@ -607,14 +629,14 @@ class Character extends FlxSprite
 					}
 
 				case 'spooky':
-					danced = !danced;
+				// 	danced = !danced;
 
-					if (danced)
-						playAnim('danceRight');
-					else
-						playAnim('danceLeft');
-				default:
-					playAnim('idle');
+				// 	if (danced)
+				// 		playAnim('danceRight');
+				// 	else
+				// 		playAnim('danceLeft');
+				// default:
+				// 	playAnim('idle');
 			}
 		}
 	}
