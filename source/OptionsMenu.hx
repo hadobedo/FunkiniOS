@@ -97,7 +97,7 @@ class OptionsMenu extends MusicBeatState
 		super.update(elapsed);
 
 		padxPos.cameras = [camGame];
-		padxPos.text = ("X Position: " + VirtualPadCamera.dPadX);
+		padxPos.text = ("X Position:  " + VirtualPadCamera.dPadX);
 		add(padxPos);
 		padxPos.setPosition(FlxG.width/2, FlxG.height/3);
 
