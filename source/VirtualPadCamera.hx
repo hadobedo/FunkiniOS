@@ -19,6 +19,7 @@ class VirtualPadCamera extends FlxState
 	public static var actionsX = -(FlxG.width/2); // fallback?
 	public static var actionsY = -(FlxG.height/2); // fallback?)
 	public static var counter = 0;
+	public static var padAlpha = 0.75;
 
 	override public function create()
 	{
@@ -38,7 +39,7 @@ class VirtualPadCamera extends FlxState
 
 
 		_pad = new FlxVirtualPad(FULL, A_B);
-		_pad.alpha = 0.75;
+		_pad.alpha = padAlpha;
 		// custom button images lookin gangsta
 		_pad.buttonUp.loadGraphic('assets/images/custompad/uparrow.png', true, 44, 41);
 		_pad.buttonDown.loadGraphic('assets/images/custompad/downarrow.png', true, 44, 41);
