@@ -5,6 +5,7 @@ import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.system.FlxSound;
 import flixel.util.FlxColor;
+import flixel.addons.transition.FlxTransitionableState;
 
 class PauseSubState extends MusicBeatSubstate
 {

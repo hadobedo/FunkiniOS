@@ -13,6 +13,7 @@ import flixel.util.FlxTimer;
 import lime.net.curl.CURLCode;
 import flixel.ui.FlxVirtualPad;
 import flixel.FlxCamera;
+import flixel.addons.transition.FlxTransitionableState;
 
 using StringTools;
 
@@ -83,6 +84,9 @@ class StoryMenuState extends MusicBeatState
 		FlxG.cameras.add(camHUD);
 
 		FlxCamera.defaultCameras = [camGame];
+
+		transIn = FlxTransitionableState.defaultTransIn;
+		transOut = FlxTransitionableState.defaultTransOut;
 
 		if (FlxG.sound.music != null)
 		{
