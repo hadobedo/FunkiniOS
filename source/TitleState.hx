@@ -245,8 +245,10 @@ class TitleState extends MusicBeatState
 
 		var pressedEnter:Bool = false;
 
-		#if desktop
-		pressedEnter:Bool = FlxG.keys.justPressed.ENTER;
+		#if !mobile
+		if (FlxG.keys.justPressed.ENTER == true) {
+			pressedEnter = true;
+		}
 		#end
 		
 		#if mobile

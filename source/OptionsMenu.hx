@@ -19,12 +19,16 @@ class OptionsMenu extends MusicBeatState
 	private var rightButton:FlxButton;	// dpad move right
 	private var leftButton:FlxButton; // dpad move left
 	private var upButton:FlxButton; // dpad move up
-	private var downButton:FlxButton; // dpad move down :):)
+	private var downButton:FlxButton; // dpad move down
 
 	private var rightButtonAction:FlxButton;	// action move right
 	private var leftButtonAction:FlxButton; // action move left
 	private var upButtonAction:FlxButton; // action move up
-	private var downButtonAction:FlxButton; // action move down :):)
+	private var downButtonAction:FlxButton; // action move down
+
+	private var alphaButtonUp:FlxButton; // alpha button up
+	private var alphaButtonDown:FlxButton; // alpha button down
+
 
 	override function create()
 	{
@@ -54,7 +58,7 @@ class OptionsMenu extends MusicBeatState
 		// there is probably a much, much better way of doing this
 		// but if it works ¯\_(ツ)_/¯ lolol
 
-		rightButton = new FlxButton(FlxG.width/1.5, FlxG.height/3, function() {
+		rightButton = new FlxButton(FlxG.width/1.5, FlxG.height/2, function() {
 			VirtualPadCamera.dPadX = VirtualPadCamera.dPadX + 10;
 			VirtualPadCamera._pad.dPad.setPosition(VirtualPadCamera.dPadX, VirtualPadCamera.dPadY);
 		});
@@ -62,7 +66,7 @@ class OptionsMenu extends MusicBeatState
 		rightButton.cameras = [camGame];
 		add(rightButton);
 
-		leftButton = new FlxButton(FlxG.width/3, FlxG.height/3, function() {
+		leftButton = new FlxButton(FlxG.width/1.75, FlxG.height/2, function() {
 			VirtualPadCamera.dPadX = VirtualPadCamera.dPadX - 10;
 			VirtualPadCamera._pad.dPad.setPosition(VirtualPadCamera.dPadX, VirtualPadCamera.dPadY);
 		});
@@ -70,7 +74,7 @@ class OptionsMenu extends MusicBeatState
 		leftButton.cameras = [camGame];
 		add(leftButton);
 
-		upButton = new FlxButton(FlxG.width/1.5, FlxG.height/2, function() {
+		upButton = new FlxButton(FlxG.width/1.5, FlxG.height/3, function() {
 			VirtualPadCamera.dPadY = VirtualPadCamera.dPadY - 10;
 			VirtualPadCamera._pad.dPad.setPosition(VirtualPadCamera.dPadX, VirtualPadCamera.dPadY);
 		});
@@ -78,7 +82,7 @@ class OptionsMenu extends MusicBeatState
 		upButton.cameras = [camGame];
 		add(upButton);
 
-		downButton = new FlxButton(FlxG.width/3, FlxG.height/2, function() {
+		downButton = new FlxButton(FlxG.width/1.75, FlxG.height/3, function() {
 			VirtualPadCamera.dPadY = VirtualPadCamera.dPadY + 10;
 			VirtualPadCamera._pad.dPad.setPosition(VirtualPadCamera.dPadX, VirtualPadCamera.dPadY);
 		});
@@ -86,6 +90,22 @@ class OptionsMenu extends MusicBeatState
 		downButton.cameras = [camGame];
 		add(downButton);
 
+
+		alphaButtonUp = new FlxButton(FlxG.width/1.75, FlxG.height/1.5, function() {
+			VirtualPadCamera.padAlpha = VirtualPadCamera.padAlpha + 0.05;
+			VirtualPadCamera._pad.alpha = VirtualPadCamera.padAlpha;
+		});
+		alphaButtonUp.loadGraphic('assets/images/custompad/uparrow.png', true, 44, 41);
+		alphaButtonUp.cameras = [camGame];
+		add(alphaButtonUp);
+
+		alphaButtonDown = new FlxButton(FlxG.width/1.5, FlxG.height/1.5, function() {
+			VirtualPadCamera.padAlpha = VirtualPadCamera.padAlpha - 0.05;
+			VirtualPadCamera._pad.alpha = VirtualPadCamera.padAlpha;
+		});
+		alphaButtonDown.loadGraphic('assets/images/custompad/downarrow.png', true, 44, 41);
+		alphaButtonDown.cameras = [camGame];
+		add(alphaButtonDown);
 
 		VirtualPadCamera.VPadCamera();
 		add(VirtualPadCamera._pad);
@@ -106,12 +126,14 @@ class OptionsMenu extends MusicBeatState
 		add(padyPos);
 		padyPos.setPosition(FlxG.width/2, FlxG.height/2);
 
+		trace("ios device in options is = " + VirtualPadCamera.iOSDevice);
+
 		switch(VirtualPadCamera.iOSDevice) {
 			case 1: // iPhone SE
 				camHUD.zoom = 2.0;
 			case 2: // iPhone X
 				camHUD.zoom = 3.9;
-				camGame.zoom = 1.8;
+				camGame.zoom = 2.5;
 			case 3: // iPhone 6/7/8/SE2
 				camHUD.zoom = 2.35;
 			case 4: // iPhone XR
