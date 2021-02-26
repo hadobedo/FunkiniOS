@@ -8,6 +8,7 @@ import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import flixel.ui.FlxVirtualPad;
 import flixel.FlxCamera;
+import flixel.input.gamepad.FlxGamepad;
 
 using StringTools;
 
@@ -15,6 +16,7 @@ class FreeplayState extends MusicBeatState
 {
 	private var camHUD:FlxCamera;
 	private var camGame:FlxCamera;
+	private var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
 
 	var songs:Array<String> = [];
 
@@ -200,12 +202,22 @@ class FreeplayState extends MusicBeatState
 
 		scoreText.text = "PERSONAL BEST:" + lerpScore;
 	
+		var gamepadStatus = FlxG.gamepads.numActiveGamepads; 
 		var upP = VirtualPadCamera._pad.buttonUp.justPressed;
 		var downP = VirtualPadCamera._pad.buttonDown.justPressed;
 		var LEFT_P = VirtualPadCamera._pad.buttonLeft.justPressed;
 		var RIGHT_P = VirtualPadCamera._pad.buttonRight.justPressed;
 		var accepted = VirtualPadCamera._pad.buttonA.justPressed;
 		var BACK = VirtualPadCamera._pad.buttonB.justPressed;
+
+		// if (gamepadStatus != 0) {
+		// 	upP = gamepad.justPressed.DPAD_UP;
+		// 	downP = gamepad.justPressed.DPAD_DOWN;
+		// 	LEFT_P = gamepad.justPressed.DPAD_LEFT;
+		// 	RIGHT_P = gamepad.justPressed.DPAD_RIGHT;
+		// 	BACK = gamepad.justPressed.B;
+		// 	accepted = gamepad.justPressed.A;
+		// }
 
 		if (upP)
 		{

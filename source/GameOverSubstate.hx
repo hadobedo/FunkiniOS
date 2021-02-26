@@ -4,6 +4,7 @@ import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
+import flixel.FlxCamera;
 
 class GameOverSubstate extends MusicBeatSubstate
 {
@@ -11,9 +12,15 @@ class GameOverSubstate extends MusicBeatSubstate
 	var camFollow:FlxObject;
 
 	var stageSuffix:String = "";
+	private var camHUD:FlxCamera;
 
 	public function new(x:Float, y:Float)
 	{
+
+		camHUD = new FlxCamera();
+		camHUD.bgColor.alpha = 0;
+		FlxG.cameras.add(camHUD);
+
 		var daStage = PlayState.curStage;
 		var daBf:String = '';
 		switch (daStage)
@@ -33,6 +40,10 @@ class GameOverSubstate extends MusicBeatSubstate
 		Conductor.songPosition = 0;
 
 		bf = new Boyfriend(x, y, daBf);
+		// scaling bf ded animation
+		if (daStage != 'school' && daStage != 'schoolEvil') {
+			bf.scale.set(2, 2);
+		}
 		add(bf);
 
 		camFollow = new FlxObject(bf.getGraphicMidpoint().x, bf.getGraphicMidpoint().y, 1, 1);
@@ -47,18 +58,38 @@ class GameOverSubstate extends MusicBeatSubstate
 		FlxG.camera.target = null;
 
 		bf.playAnim('firstDeath');
+
+		VirtualPadCamera.VPadCamera();
+		add(VirtualPadCamera._pad);
+		VirtualPadCamera._pad.cameras = [camHUD];
 	}
 
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
 
-		if (controls.ACCEPT)
+		switch(VirtualPadCamera.iOSDevice) {
+			case 1: // iPhone SE
+				camHUD.zoom = 2.0;
+			case 2: // iPhone X
+				camHUD.zoom = 3.9;
+			case 3: // iPhone 6/7/8/SE2
+				camHUD.zoom = 2.35;
+			case 4: // iPhone XR
+				camHUD.zoom = 2.15;
+			default: // idk wtf device ur using oops
+				camHUD.zoom = 1.0;
+		}
+
+		var ACCEPT = VirtualPadCamera._pad.buttonA.justReleased;
+		var BACK = VirtualPadCamera._pad.buttonB.justReleased;
+
+		if (ACCEPT)
 		{
 			endBullshit();
 		}
 
-		if (controls.BACK)
+		if (BACK)
 		{
 			FlxG.sound.music.stop();
 

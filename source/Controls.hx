@@ -13,7 +13,6 @@ import flixel.input.keyboard.FlxKey;
 
 enum abstract Action(String) to String from String
 {
-	// merely describes what each button does, not important (i think?)
 	var UP = "up";
 	var LEFT = "left";
 	var RIGHT = "right";
@@ -32,14 +31,11 @@ enum abstract Action(String) to String from String
 	var RESET = "reset";
 	var CHEAT = "cheat";
 }
-// two types of devices, keys and gamepad, where the id is just the amount of gamepads connected.
 enum Device
 {
 	Keys;
 	Gamepad(id:Int);
 }
-
-// Enum (meaning it can be called like Controls.Control) defining all possible inputs.
 
 enum Control
 {
@@ -63,8 +59,6 @@ enum KeyboardScheme
 	Custom;
 }
 
-
-// UNDERSCORES DONT MEAN SHIT, each variable is set to an action
 
 class Controls extends FlxActionSet
 {
@@ -260,7 +254,6 @@ class Controls extends FlxActionSet
 	 * @return ->Void)
 	 */
 
-	 // THIS STUFF HERE DEFINES WHAT EACH CONTROL DOES
 	function forEachBound(control:Control, func:FlxActionDigital->FlxInputState->Void)
 	{
 		switch (control)

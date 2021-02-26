@@ -19,12 +19,14 @@ import flixel.FlxState;
 import lime.app.Application;
 import VirtualPadCamera.VirtualPadCamera;
 import flixel.FlxCamera;
+import flixel.input.gamepad.FlxGamepad;
 
 using StringTools;
 
 class MainMenuState extends MusicBeatState
 {
 
+	private var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
 	private var camHUD:FlxCamera;
 	private var camGame:FlxCamera;
 
@@ -148,10 +150,18 @@ class MainMenuState extends MusicBeatState
 		if (!selectedSomethin)
 		{
 
+			var gamepadStatus = FlxG.gamepads.numActiveGamepads; 
 			var UP_P = VirtualPadCamera._pad.buttonUp.justPressed;
 			var DOWN_P = VirtualPadCamera._pad.buttonDown.justPressed;
 			var BACK = VirtualPadCamera._pad.buttonB.justPressed;
 			var ACCEPT = VirtualPadCamera._pad.buttonA.justPressed;
+
+			// if (gamepadStatus != 0) {
+			// 	UP_P = gamepad.justPressed.DPAD_UP;
+			// 	DOWN_P = gamepad.justPressed.DPAD_DOWN;
+			// 	BACK = gamepad.justPressed.B;
+			// 	ACCEPT = gamepad.justPressed.A;
+			// }
 
 			if (UP_P)
 			{

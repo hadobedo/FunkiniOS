@@ -6,6 +6,8 @@ import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.FlxCamera;
+import flixel.group.FlxGroup;
+import flixel.util.FlxColor;
 
 class OptionsMenu extends MusicBeatState
 {
@@ -29,9 +31,20 @@ class OptionsMenu extends MusicBeatState
 	private var alphaButtonUp:FlxButton; // alpha button up
 	private var alphaButtonDown:FlxButton; // alpha button down
 
+	var optionsText:FlxText;
+	var alphaText:FlxText;
+
 
 	override function create()
 	{
+		optionsText = new FlxText(FlxG.width * 0.7, 10, 0, "", 32);
+		optionsText.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, RIGHT);
+		optionsText.alpha = 0.7;
+
+		alphaText = new FlxText(FlxG.width * 0.7, 10, 0, "", 32);
+		alphaText.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, RIGHT);
+		alphaText.alpha = 0.7;
+
 		camHUD = new FlxCamera();
 		camGame = new FlxCamera();
 		camHUD.bgColor.alpha = 0;
@@ -58,40 +71,53 @@ class OptionsMenu extends MusicBeatState
 		// there is probably a much, much better way of doing this
 		// but if it works ¯\_(ツ)_/¯ lolol
 
-		rightButton = new FlxButton(FlxG.width/1.5, FlxG.height/2, function() {
-			VirtualPadCamera.dPadX = VirtualPadCamera.dPadX + 10;
-			VirtualPadCamera._pad.dPad.setPosition(VirtualPadCamera.dPadX, VirtualPadCamera.dPadY);
+		rightButton = new FlxButton(FlxG.width/1.65, FlxG.height/2.75, function() {
+			VirtualPadCamera._gameSave.data.dPadX += 10;
+
+			VirtualPadCamera._gameSave.flush();
+
+			VirtualPadCamera._pad.dPad.setPosition(VirtualPadCamera._gameSave.data.dPadX, VirtualPadCamera._gameSave.data.dPadY);
 		});
 		rightButton.loadGraphic('assets/images/custompad/rightarrow.png', true, 44, 41);
 		rightButton.cameras = [camGame];
 		add(rightButton);
 
-		leftButton = new FlxButton(FlxG.width/1.75, FlxG.height/2, function() {
-			VirtualPadCamera.dPadX = VirtualPadCamera.dPadX - 10;
-			VirtualPadCamera._pad.dPad.setPosition(VirtualPadCamera.dPadX, VirtualPadCamera.dPadY);
+		leftButton = new FlxButton(FlxG.width/1.75, FlxG.height/2.75, function() {
+			VirtualPadCamera._gameSave.data.dPadX -= 10;
+
+			VirtualPadCamera._gameSave.flush();
+
+			VirtualPadCamera._pad.dPad.setPosition(VirtualPadCamera._gameSave.data.dPadX, VirtualPadCamera._gameSave.data.dPadY);
 		});
 		leftButton.loadGraphic('assets/images/custompad/leftarrow.png', true, 44, 41);
 		leftButton.cameras = [camGame];
 		add(leftButton);
 
-		upButton = new FlxButton(FlxG.width/1.5, FlxG.height/3, function() {
-			VirtualPadCamera.dPadY = VirtualPadCamera.dPadY - 10;
-			VirtualPadCamera._pad.dPad.setPosition(VirtualPadCamera.dPadX, VirtualPadCamera.dPadY);
+		upButton = new FlxButton(FlxG.width/1.7, FlxG.height/3, function() {
+			VirtualPadCamera._gameSave.data.dPadY -= 10;
+
+			VirtualPadCamera._gameSave.flush();
+
+			VirtualPadCamera._pad.dPad.setPosition(VirtualPadCamera._gameSave.data.dPadX, VirtualPadCamera._gameSave.data.dPadY);
 		});
 		upButton.loadGraphic('assets/images/custompad/uparrow.png', true, 44, 41);
 		upButton.cameras = [camGame];
 		add(upButton);
 
-		downButton = new FlxButton(FlxG.width/1.75, FlxG.height/3, function() {
-			VirtualPadCamera.dPadY = VirtualPadCamera.dPadY + 10;
-			VirtualPadCamera._pad.dPad.setPosition(VirtualPadCamera.dPadX, VirtualPadCamera.dPadY);
+		downButton = new FlxButton(FlxG.width/1.7, FlxG.height/2.5, function() {
+			VirtualPadCamera._gameSave.data.dPadY += 10;
+			trace('gamesave dPadY = ' + VirtualPadCamera._gameSave.data.dPadY);
+			trace('actual dPadY = ' + VirtualPadCamera.dPadY);
+			VirtualPadCamera._gameSave.flush();
+
+			VirtualPadCamera._pad.dPad.setPosition(VirtualPadCamera._gameSave.data.dPadX, VirtualPadCamera._gameSave.data.dPadY);
 		});
 		downButton.loadGraphic('assets/images/custompad/downarrow.png', true, 44, 41);
 		downButton.cameras = [camGame];
 		add(downButton);
 
 
-		alphaButtonUp = new FlxButton(FlxG.width/1.75, FlxG.height/1.5, function() {
+		alphaButtonUp = new FlxButton(FlxG.width/1.7, FlxG.height/2.1, function() {
 			VirtualPadCamera.padAlpha = VirtualPadCamera.padAlpha + 0.05;
 			VirtualPadCamera._pad.alpha = VirtualPadCamera.padAlpha;
 		});
@@ -99,7 +125,7 @@ class OptionsMenu extends MusicBeatState
 		alphaButtonUp.cameras = [camGame];
 		add(alphaButtonUp);
 
-		alphaButtonDown = new FlxButton(FlxG.width/1.5, FlxG.height/1.5, function() {
+		alphaButtonDown = new FlxButton(FlxG.width/1.7, FlxG.height/1.9, function() {
 			VirtualPadCamera.padAlpha = VirtualPadCamera.padAlpha - 0.05;
 			VirtualPadCamera._pad.alpha = VirtualPadCamera.padAlpha;
 		});
@@ -116,17 +142,15 @@ class OptionsMenu extends MusicBeatState
 	{
 		super.update(elapsed);
 
-		padxPos.cameras = [camGame];
-		padxPos.text = ("X Position:  " + VirtualPadCamera.dPadX);
-		add(padxPos);
-		padxPos.setPosition(FlxG.width/2, FlxG.height/3);
+		optionsText.cameras = [camGame];
+		optionsText.text = ('DPAD POSITION:');
+		add(optionsText);
+		optionsText.setPosition(FlxG.width/2.3, FlxG.height/2.75);
 
-		padyPos.cameras = [camGame];
-		padyPos.text = ("Y Position: " + VirtualPadCamera.dPadY);
-		add(padyPos);
-		padyPos.setPosition(FlxG.width/2, FlxG.height/2);
-
-		trace("ios device in options is = " + VirtualPadCamera.iOSDevice);
+		alphaText.cameras = [camGame];
+		alphaText.text = ('BUTTON ALPHA:');
+		add(alphaText);
+		alphaText.setPosition(FlxG.width/2.3, FlxG.height/2);
 
 		switch(VirtualPadCamera.iOSDevice) {
 			case 1: // iPhone SE

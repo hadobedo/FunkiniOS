@@ -23,6 +23,7 @@ import flixel.util.FlxColor;
 import flixel.util.FlxSort;
 import flixel.util.FlxTimer;
 import flixel.util.FlxSave;
+import flixel.input.gamepad.FlxGamepad;
 
 using StringTools;
 
@@ -34,6 +35,8 @@ class PlayState extends MusicBeatState
 	public static var storyWeek:Int = 0;
 	public static var storyPlaylist:Array<String> = [];
 	public static var storyDifficulty:Int = 1;
+
+
 
 	var halloweenLevel:Bool = false;
 
@@ -75,6 +78,7 @@ class PlayState extends MusicBeatState
 	private var camGame:FlxCamera;
 	private var camControlHUD:FlxCamera;
 
+
 	var dialogue:Array<String> = ['blah blah blah', 'coolswag'];
 
 	var halloweenBG:FlxSprite;
@@ -107,8 +111,6 @@ class PlayState extends MusicBeatState
 	public static var daPixelZoom:Float = 6;
 
 	var inCutscene:Bool = false;
-
-	var _saveconrtol:FlxSave;
 
 	override public function create()
 	{
@@ -408,7 +410,7 @@ class PlayState extends MusicBeatState
 			stageFront.active = false;
 			add(stageFront);
 
-			var stageCurtains:FlxSprite = new FlxSprite(-500, -300).loadGraphic('assets/images/stagecurtains.png');
+			var stageCurtains:FlxSprite = new FlxSprite(-500, -400).loadGraphic('assets/images/stagecurtains.png');
 			stageCurtains.setGraphicSize(Std.int(stageCurtains.width * 0.9));
 			stageCurtains.updateHitbox();
 			stageCurtains.antialiasing = true;
@@ -465,6 +467,8 @@ class PlayState extends MusicBeatState
 				dad.y += 130;
 			case 'dad':
 				camPos.x += 400;
+				dad.y += (dad.y/2);
+				gf.y += (gf.y/2);
 			case 'pico':
 				camPos.x += 600;
 				dad.y += 300;
@@ -486,6 +490,16 @@ class PlayState extends MusicBeatState
 
 		boyfriend = new Boyfriend(770, 450, SONG.player1);
 
+		// resizing the boyfriend and girlfriend size by 2x to account for compressing textures, applied to all levels except week 6
+		if (SONG.player2 != 'spirit' && SONG.player2 != 'senpai' && SONG.player2 != 'senpai-angry') {
+			boyfriend.scale.set(2, 2);
+			gf.scale.set(2, 2);
+		}
+
+		if ((SONG.player2 == 'pico' || SONG.player2 == 'dad' || SONG.player2 == 'spooky')) {
+			dad.scale.set(2, 2);
+ 		} 
+		 
 		// REPOSITIONING PER STAGE
 		switch (curStage)
 		{
@@ -1234,8 +1248,6 @@ class PlayState extends MusicBeatState
 				camControlHUD.zoom = 1.0;
 		}
 
-
-
 		scoreTxt.text = "Score:" + songScore;
 		//FlxG.keys.justPressed.ENTER
 		#if !mobile
@@ -1788,7 +1800,11 @@ class PlayState extends MusicBeatState
 
 	private function keyShit():Void
 	{
-		// HOLDING
+
+		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
+		var gamepadStatus = FlxG.gamepads.numActiveGamepads; 
+		trace(gamepadStatus);
+		
 		var up = VirtualPadCamera._pad.buttonUp.pressed;
 		var right = VirtualPadCamera._pad.buttonRight.pressed;
 		var down = VirtualPadCamera._pad.buttonDown.pressed;
@@ -1804,6 +1820,37 @@ class PlayState extends MusicBeatState
 		var downR = VirtualPadCamera._pad.buttonDown.justReleased;
 		var leftR = VirtualPadCamera._pad.buttonLeft.justReleased;
 
+		// if (gamepadStatus != 0) {
+		// 	up = gamepad.pressed.DPAD_UP;
+		// 	right = gamepad.pressed.DPAD_RIGHT;
+		// 	down = gamepad.pressed.DPAD_DOWN;
+		// 	left = gamepad.pressed.DPAD_LEFT;
+
+		// 	upP = gamepad.justPressed.DPAD_UP;
+		// 	rightP = gamepad.justPressed.DPAD_RIGHT;
+		// 	downP = gamepad.justPressed.DPAD_DOWN;
+		// 	leftP = gamepad.justPressed.DPAD_LEFT;
+
+		// 	upR = gamepad.justReleased.DPAD_UP;
+		// 	rightR = gamepad.justReleased.DPAD_RIGHT;
+		// 	downR = gamepad.justReleased.DPAD_DOWN;
+		// 	leftR = gamepad.justReleased.DPAD_LEFT;
+		// } else { // sorta redundant
+		// 	up = VirtualPadCamera._pad.buttonUp.pressed;
+		// 	right = VirtualPadCamera._pad.buttonRight.pressed;
+		// 	down = VirtualPadCamera._pad.buttonDown.pressed;
+		// 	left = VirtualPadCamera._pad.buttonLeft.pressed;
+
+		// 	upP = VirtualPadCamera._pad.buttonUp.justPressed;
+		// 	rightP = VirtualPadCamera._pad.buttonRight.justPressed;
+		// 	downP = VirtualPadCamera._pad.buttonDown.justPressed;
+		// 	leftP = VirtualPadCamera._pad.buttonLeft.justPressed;
+
+		// 	upR = VirtualPadCamera._pad.buttonUp.justReleased;
+		// 	rightR = VirtualPadCamera._pad.buttonRight.justReleased;
+		// 	downR = VirtualPadCamera._pad.buttonDown.justReleased;
+		// 	leftR = VirtualPadCamera._pad.buttonLeft.justReleased;
+		// }
 
 		var controlArray:Array<Bool> = [leftP, downP, upP, rightP];
 
