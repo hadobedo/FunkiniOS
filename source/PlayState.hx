@@ -1,5 +1,6 @@
 package;
 
+import flixel.system.FlxAssets.VirtualInputData;
 import Section.SwagSection;
 import Song.SwagSong;
 import flixel.FlxCamera;
@@ -24,6 +25,7 @@ import flixel.util.FlxSort;
 import flixel.util.FlxTimer;
 import flixel.util.FlxSave;
 import flixel.input.gamepad.FlxGamepad;
+import flixel.ui.FlxButton;
 
 using StringTools;
 
@@ -36,9 +38,25 @@ class PlayState extends MusicBeatState
 	public static var storyPlaylist:Array<String> = [];
 	public static var storyDifficulty:Int = 1;
 
+	private var rightButton:FlxButton;	// dpad move right
+	private var leftButton:FlxButton; // dpad move left
+	private var upButton:FlxButton; // dpad move up
+	private var downButton:FlxButton; // dpad move down
 
+	private var rightButtonScale:FlxButton;	// dpad move right
+	private var leftButtonScale:FlxButton; // dpad move left
+	private var upButtonScale:FlxButton; // dpad move up
+	private var downButtonScale:FlxButton; // dpad move down
+
+	private var switchObj:FlxButton;
+	var objCur:Int = 0;
+	var objCurVar:String = '';
+
+	var widthMul:Float = 1.0;
+	var heightMul:Float = 1.0;
 
 	var halloweenLevel:Bool = false;
+
 
 	private var vocals:FlxSound;
 
@@ -102,6 +120,9 @@ class PlayState extends MusicBeatState
 	var talking:Bool = true;
 	var songScore:Int = 0;
 	var scoreTxt:FlxText;
+
+	var testX:Int = 0;
+	var testY:Int = 0;
 
 	public static var campaignScore:Int = 0;
 
@@ -169,6 +190,9 @@ class PlayState extends MusicBeatState
 
 			halloweenBG = new FlxSprite(-200, -100).loadGraphic('assets/images/halloween_bg_mobile.png');
 			//halloweenBG.antialiasing = true;
+
+			halloweenBG.setGraphicSize(Std.int(FlxG.width * 1.2), Std.int(FlxG.height*1.2));
+			
 			add(halloweenBG);
 
 			//halloweenLevel = true;
@@ -182,32 +206,40 @@ class PlayState extends MusicBeatState
 
 			var bg:FlxSprite = new FlxSprite(-100).loadGraphic('assets/images/philly/sky.png');
 			bg.scrollFactor.set(0.1, 0.1);
-			add(bg);
 
 			var city:FlxSprite = new FlxSprite(-10).loadGraphic('assets/images/philly/city.png');
 			city.scrollFactor.set(0.3, 0.3);
 			city.setGraphicSize(Std.int(city.width * 0.85));
 			city.updateHitbox();
-			add(city);
 
 			phillyCityLights = new FlxTypedGroup<FlxSprite>();
-			add(phillyCityLights);
 
 			for (i in 0...5)
 			{
 				var light:FlxSprite = new FlxSprite(city.x).loadGraphic('assets/images/philly/win' + i + '.png');
 				light.scrollFactor.set(0.3, 0.3);
 				light.visible = false;
-				light.setGraphicSize(Std.int(light.width * 0.85));
+				if (VirtualPadCamera.iOSDevice == 2) { //iPX
+					// light.setPosition(280, 0);
+					light.setGraphicSize(Std.int(FlxG.width*0.8), FlxG.height);
+				}
+
+				if (VirtualPadCamera.iOSDevice == 5) { //iPX
+					// light.setPosition(60, 110);
+					light.setGraphicSize(Std.int(FlxG.width*1.65), Std.int(FlxG.height*1.25));
+				}
+
+				if (VirtualPadCamera.iOSDevice == 1 || VirtualPadCamera.iOSDevice == 3) {
+					light.setGraphicSize(Std.int(FlxG.width*1.45), Std.int(FlxG.height*1.35));
+				}
 				light.updateHitbox();
+				light.antialiasing = true;
 				phillyCityLights.add(light);
 			}
 
 			var streetBehind:FlxSprite = new FlxSprite(-40, 50).loadGraphic('assets/images/philly/behindTrain.png');
-			add(streetBehind);
 
 			phillyTrain = new FlxSprite(2000, 360).loadGraphic('assets/images/philly/train.png');
-			add(phillyTrain);
 
 			trainSound = new FlxSound().loadEmbedded('assets/sounds/train_passes' + TitleState.soundExt);
 			FlxG.sound.list.add(trainSound);
@@ -215,6 +247,52 @@ class PlayState extends MusicBeatState
 			// var cityLights:FlxSprite = new FlxSprite().loadGraphic(AssetPaths.win0.png);
 
 			var street:FlxSprite = new FlxSprite(-40, streetBehind.y).loadGraphic('assets/images/philly/street.png');
+
+			if (VirtualPadCamera.iOSDevice == 2 || VirtualPadCamera.iOSDevice == 4 || VirtualPadCamera.iOSDevice == 6) { //iPX, iPXR, iP11ProMax etc.
+
+				bg.setPosition(280, 0);
+				bg.setGraphicSize(Std.int(FlxG.width*0.8), FlxG.height);
+
+				city.setPosition(280, 0);
+				city.setGraphicSize(Std.int(FlxG.width*0.8), FlxG.height);
+
+				street.setPosition(40, 0);
+				streetBehind.setPosition(30, -10);
+				street.setGraphicSize(FlxG.width, FlxG.height);
+
+			}
+
+			if (VirtualPadCamera.iOSDevice == 5) { //iPads
+				bg.setPosition(80, 150);
+				bg.setGraphicSize(Std.int(FlxG.width*1.2), FlxG.height);
+
+				city.setPosition(60, 110);
+				city.setGraphicSize(Std.int(FlxG.width*1.6), FlxG.height);
+
+				street.setPosition(50, -150);
+				streetBehind.setPosition(30, -10);
+				streetBehind.setGraphicSize(Std.int(FlxG.width*1.65), Std.int(FlxG.height*1.25));
+				street.setGraphicSize(Std.int(FlxG.width*1.65), Std.int(FlxG.height*1.25));
+			}
+
+			if (VirtualPadCamera.iOSDevice == 1 || VirtualPadCamera.iOSDevice == 3) { //ipSE, iP6/7/8
+				bg.setPosition(-150, 60);
+				bg.setGraphicSize(Std.int(FlxG.width*1.7), Std.int(FlxG.height*2.1));
+
+				city.setPosition(-150, -10);
+				city.setGraphicSize(Std.int(FlxG.width*1.45), Std.int(FlxG.height*1.35));
+
+				street.setPosition(-270, 20);
+				streetBehind.setPosition(-270, 20);
+				streetBehind.setGraphicSize(Std.int(FlxG.width*1.6), Std.int(FlxG.height*1.4));
+				street.setGraphicSize(Std.int(FlxG.width*1.6), Std.int(FlxG.height*1.4));
+			}
+
+			add(bg);
+			add(city);
+			add(phillyCityLights);
+			add(streetBehind);
+			add(phillyTrain);
 			add(street);
 		}
 		else if (SONG.song.toLowerCase() == 'milf' || SONG.song.toLowerCase() == 'satin-panties' || SONG.song.toLowerCase() == 'high')
@@ -224,6 +302,9 @@ class PlayState extends MusicBeatState
 
 			var skyBG:FlxSprite = new FlxSprite(-120, -50).loadGraphic('assets/images/limo/limoSunset.png');
 			skyBG.scrollFactor.set(0.1, 0.1);
+			if (VirtualPadCamera.iOSDevice != 1 && VirtualPadCamera.iOSDevice != 3) { //notched devices + ipad scaling for sky, everything else gucci
+				skyBG.setGraphicSize(Std.int(FlxG.width*1.4), Std.int(FlxG.height*1.4));
+			}
 			add(skyBG);
 
 			var bgLimo:FlxSprite = new FlxSprite(-200, 480);
@@ -263,6 +344,7 @@ class PlayState extends MusicBeatState
 
 			fastCar = new FlxSprite(-300, 160).loadGraphic('assets/images/limo/fastCarLol.png');
 			// add(limo);
+			
 		}
 		else if (SONG.song.toLowerCase() == 'cocoa' || SONG.song.toLowerCase() == 'eggnog')
 		{
@@ -271,13 +353,21 @@ class PlayState extends MusicBeatState
 			defaultCamZoom = 0.80;
 
 			// had to make background static due to RAM stuff
+			var fgSnow:FlxSprite = new FlxSprite(-600, 700).loadGraphic('assets/images/christmas/fgSnow.png');
+			fgSnow.active = false;
+			fgSnow.antialiasing = true;
+			fgSnow.scale.set(1.5, 1.5);
+			
 			var bg:FlxSprite = new FlxSprite(-400, -500).loadGraphic('assets/images/christmas/christmasBG_Full.png');
 			bg.antialiasing = true;
 			bg.scrollFactor.set(0.2, 0.2);
 			bg.active = false;
-			bg.setGraphicSize(Std.int(bg.width * 0.8));
-			bg.updateHitbox();
+			bg.setGraphicSize(Std.int(FlxG.width*1.4), Std.int(FlxG.height));
+			bg.screenCenter();
+			bg.y -= 250;
+			bg.scale.set(1.1, 1.1);
 			add(bg);
+			add(fgSnow);
 
 			// santa = new FlxSprite(-840, 150);
 			// santa.frames = FlxAtlasFrames.fromSparrow('assets/images/christmas/santa.png', 'assets/images/christmas/santa.xml');
@@ -292,8 +382,10 @@ class PlayState extends MusicBeatState
 			bg.antialiasing = true;
 			bg.scrollFactor.set(0.2, 0.2);
 			bg.active = false;
-			bg.setGraphicSize(Std.int(bg.width * 0.8));
-			bg.updateHitbox();
+			bg.setGraphicSize(Std.int(FlxG.width*1.4), Std.int(FlxG.height));
+			bg.screenCenter();
+			bg.y -= 250;
+			bg.scale.set(1.1, 1.1);
 			add(bg);
 
 			var evilTree:FlxSprite = new FlxSprite(300, -300).loadGraphic('assets/images/christmas/evilTree.png');
@@ -303,6 +395,7 @@ class PlayState extends MusicBeatState
 
 			var evilSnow:FlxSprite = new FlxSprite(-200, 700).loadGraphic("assets/images/christmas/evilSnow.png");
 			evilSnow.antialiasing = true;
+			evilSnow.scale.set(1.5, 1.5);
 			add(evilSnow);
 		}
 		else if (SONG.song.toLowerCase() == 'senpai' || SONG.song.toLowerCase() == 'roses')
@@ -400,7 +493,7 @@ class PlayState extends MusicBeatState
 			bg.antialiasing = true;
 			bg.scrollFactor.set(0.9, 0.9);
 			bg.active = false;
-			add(bg);
+			
 
 			var stageFront:FlxSprite = new FlxSprite(-650, 600).loadGraphic('assets/images/stagefront.png');
 			stageFront.setGraphicSize(Std.int(stageFront.width * 1.1));
@@ -408,15 +501,23 @@ class PlayState extends MusicBeatState
 			stageFront.antialiasing = true;
 			stageFront.scrollFactor.set(0.9, 0.9);
 			stageFront.active = false;
-			add(stageFront);
+			
 
 			var stageCurtains:FlxSprite = new FlxSprite(-500, -400).loadGraphic('assets/images/stagecurtains.png');
-			stageCurtains.setGraphicSize(Std.int(stageCurtains.width * 0.9));
+
 			stageCurtains.updateHitbox();
 			stageCurtains.antialiasing = true;
 			stageCurtains.scrollFactor.set(1.3, 1.3);
 			stageCurtains.active = false;
 
+			if(VirtualPadCamera.iOSDevice == 2 || VirtualPadCamera.iOSDevice == 4 || VirtualPadCamera.iOSDevice == 6) { //notched device curtains
+				stageCurtains.setGraphicSize(Std.int(FlxG.width*1.3), Std.int(FlxG.height*1.3));
+			} else if (VirtualPadCamera.iOSDevice == 5) { //ipad?
+				stageCurtains.setGraphicSize(Std.int(FlxG.width*1.6), Std.int(FlxG.height*1.6));
+				bg.setGraphicSize(Std.int(bg.width), Std.int(FlxG.height*1.6));
+			}
+			add(bg);
+			add(stageFront);
 			add(stageCurtains);
 		}
 
@@ -440,18 +541,14 @@ class PlayState extends MusicBeatState
 		gf = new Character(400, 130, gfVersion);
 		gf.scrollFactor.set(0.95, 0.95);
 
-		// Shitty layering but whatev it works LOL
-		if (curStage == 'limo')
-			add(limo);
-
 		dad = new Character(100, 100, SONG.player2);
 
 		var camPos:FlxPoint = new FlxPoint(dad.getGraphicMidpoint().x, dad.getGraphicMidpoint().y);
 
 		switch (SONG.player2)
 		{
-			case 'gf':
-				dad.setPosition(gf.x, gf.y);
+			case 'tut-gf':
+				dad.setPosition(gf.x, (gf.y + 15));
 				gf.visible = false;
 				if (isStoryMode)
 				{
@@ -468,7 +565,6 @@ class PlayState extends MusicBeatState
 			case 'dad':
 				camPos.x += 400;
 				dad.y += (dad.y/2);
-				gf.y += (gf.y/2);
 			case 'pico':
 				camPos.x += 600;
 				dad.y += 300;
@@ -494,9 +590,10 @@ class PlayState extends MusicBeatState
 		if (SONG.player2 != 'spirit' && SONG.player2 != 'senpai' && SONG.player2 != 'senpai-angry') {
 			boyfriend.scale.set(2, 2);
 			gf.scale.set(2, 2);
+			gf.y += (gf.y/2);
 		}
 
-		if ((SONG.player2 == 'pico' || SONG.player2 == 'dad' || SONG.player2 == 'spooky')) {
+		if ((SONG.player2 == 'pico' || SONG.player2 == 'dad' || SONG.player2 == 'spooky' || SONG.player2 == 'tut-gf')) {
 			dad.scale.set(2, 2);
  		} 
 		 
@@ -504,8 +601,11 @@ class PlayState extends MusicBeatState
 		switch (curStage)
 		{
 			case 'limo':
-				boyfriend.y -= 220;
-				boyfriend.x += 260;
+				// woohoo hardcoded repositioning by moi
+				boyfriend.y -= 120;
+				boyfriend.x += 270;
+				gf.y += 120;
+				gf.x += 70;
 
 				resetFastCar();
 				add(fastCar);
@@ -536,9 +636,26 @@ class PlayState extends MusicBeatState
 				gf.y += 300;
 		}
 
+
 		add(gf);
+
+		// Shitty layering but whatev it works LOL
+		if (curStage == 'limo')
+			add(limo);
+		
 		add(dad);
 		add(boyfriend);
+
+		add(downButton);
+		add(upButton);
+		add(leftButton);
+		add(rightButton);
+		add(upButtonScale);
+		add(downButtonScale);
+		add(leftButtonScale);
+		add(rightButtonScale);
+		add(switchObj);
+
 
 		var doof:DialogueBox = new DialogueBox(false, dialogue);
 		// doof.x += 70;
@@ -685,6 +802,7 @@ class PlayState extends MusicBeatState
 		VirtualPadCamera.VPadCamera();
 		add(VirtualPadCamera._pad);
 		VirtualPadCamera._pad.cameras = [camControlHUD];
+
 
 	}
 
@@ -900,7 +1018,7 @@ class PlayState extends MusicBeatState
 
 		if (!paused)
 			FlxG.sound.playMusic("assets/music/" + SONG.song + "_Inst" + TitleState.soundExt, 1, false);
-		FlxG.sound.music.onComplete = endSong;
+		// FlxG.sound.music.onComplete = endSong; TEMP COMMENT OUT
 		vocals.play();
 	}
 
@@ -1231,21 +1349,17 @@ class PlayState extends MusicBeatState
 		}
 
 		super.update(elapsed);
+		camControlHUD.zoom = Std.parseFloat(VirtualPadCamera._gameZoomSave.data.zoomVar);
+
 		switch(VirtualPadCamera.iOSDevice) {
-			case 1: // iPhone SE
-		 		camControlHUD.zoom = 2.0;
 			case 2: // iPhone X
-				camControlHUD.zoom = 3.9;
 				camGame.zoom = 1.8;
 				camHUD.setPosition(150, 40);
-			case 3: // iPhone 6/7/8/SE2
-				camControlHUD.zoom = 2.35;
 			case 4: // iPhone XR
-				camControlHUD.zoom = 2.15;
 				camGame.zoom = 1.6;
 				camHUD.setPosition(130, 20);
-			default: // idk wtf device ur using oops
-				camControlHUD.zoom = 1.0;
+			case 5: // iPads
+				camGame.zoom = 1.4;
 		}
 
 		scoreTxt.text = "Score:" + songScore;
@@ -1533,7 +1647,7 @@ class PlayState extends MusicBeatState
 				{
 					if (daNote.tooLate || !daNote.wasGoodHit)
 					{
-						health -= 0.0475;
+						//health -= 0.0475; TEMP COMMENT OUT
 						vocals.volume = 0;
 					}
 
@@ -1803,7 +1917,6 @@ class PlayState extends MusicBeatState
 
 		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
 		var gamepadStatus = FlxG.gamepads.numActiveGamepads; 
-		trace(gamepadStatus);
 		
 		var up = VirtualPadCamera._pad.buttonUp.pressed;
 		var right = VirtualPadCamera._pad.buttonRight.pressed;
@@ -2306,7 +2419,7 @@ class PlayState extends MusicBeatState
 		{
 			boyfriend.playAnim('hey', true);
 
-			if (SONG.song == 'Tutorial' && dad.curCharacter == 'gf')
+			if (SONG.song == 'Tutorial' && dad.curCharacter == 'tut-gf')
 			{
 				dad.playAnim('cheer', true);
 			}

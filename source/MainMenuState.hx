@@ -84,16 +84,9 @@ class MainMenuState extends MusicBeatState
 		magenta.antialiasing = true;
 		magenta.color = 0xFFfd719b;
 		// more hardcoding yuck
-		if (FlxG.width == 2436 && FlxG.height == 1125) {
-			bg.setGraphicSize(2436, 1327);
-			magenta.setGraphicSize(2436, 1327);
-		} else if ((FlxG.width == 1624 && FlxG.height == 750) || (FlxG.width == 1792 && FlxG.height == 828)){
-			bg.setGraphicSize(1624, 980);
-			magenta.setGraphicSize(1624, 980);
-		} else {
-			bg.setGraphicSize(Std.int(bg.width * 1.1));
-			magenta.setGraphicSize(Std.int(magenta.width * 1.1));
-		}
+		bg.setGraphicSize(Std.int(FlxG.width), Std.int(FlxG.height*1.18));
+		magenta.setGraphicSize(Std.int(FlxG.width), Std.int(FlxG.height*1.18));
+
 
 		add(bg);
 		add(magenta);
@@ -236,19 +229,8 @@ class MainMenuState extends MusicBeatState
 		}
 
 		super.update(elapsed);
-		switch(VirtualPadCamera.iOSDevice) {
-			case 1: // iPhone SE
-				camHUD.zoom = 2.0;
-			case 2: // iPhone X
-				camHUD.zoom = 3.9;
-				camGame.zoom = 1.05;
-			case 3: // iPhone 6/7/8/SE2
-				camHUD.zoom = 2.35;
-			case 4: // iPhone XR
-				camHUD.zoom = 2.15;
-			default: // idk wtf device ur using oops
-				camHUD.zoom = 1.0;
-		}
+
+		camHUD.zoom = Std.parseFloat(VirtualPadCamera._gameZoomSave.data.zoomVar);
 
 
 		menuItems.forEach(function(spr:FlxSprite)

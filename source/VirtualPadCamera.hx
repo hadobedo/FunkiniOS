@@ -23,6 +23,8 @@ class VirtualPadCamera extends FlxState
 	public static var padAlpha = 0.75;
 	public static var _gameSave = new FlxSave(); // initialize
 	public static var _gameSaveCounter = new FlxSave(); // initialize
+	public static var _gameZoomSave = new FlxSave(); // initialize
+	public static var zoomVar = 1.0;
 
 	override public function create()
 	{
@@ -39,9 +41,10 @@ class VirtualPadCamera extends FlxState
 
 		_gameSave.bind("DPadPos"); // bind to the named save slot
 		_gameSaveCounter.bind("counter");
+		_gameZoomSave.bind("zoom");
 
-        var screenX = openfl.system.Capabilities.screenResolutionX;
-        var screenY = openfl.system.Capabilities.screenResolutionY;
+        var screenX = FlxG.width;
+        var screenY = FlxG.height;
 
 
 		_pad = new FlxVirtualPad(FULL, A_B);
@@ -68,33 +71,71 @@ class VirtualPadCamera extends FlxState
 			if (screenX == 1136 && screenY == 640) {
 				_gameSave.data.dPadX = 300;
 				_gameSave.data.dPadY = -155;
+				_gameZoomSave.data.zoomVar = 2.0;
 
 				_gameSave.flush(); // save
+				_gameZoomSave.flush(); // save
 			} 
 			// iPhone X
 			if (screenX == 2436 && screenY == 1125) {
 				_gameSave.data.dPadX = 950;
 				_gameSave.data.dPadY = -430;
+				_gameZoomSave.data.zoomVar = 3.9;
 
 				_gameSave.flush(); // save
+				_gameZoomSave.flush(); // save
 			}
-			// iPhone 6/7/8/SE2
-			if (screenX == 1334 && screenY == 750) {
+			// iPhone 6/7/8/SE2 or SE with modded resolution?
+			if ((screenX == 1334 && screenY == 750) || (screenX == 1138 && screenY == 639)) {
 				_gameSave.data.dPadX = 400;
 				_gameSave.data.dPadY = -220;
+				_gameZoomSave.data.zoomVar = 2.35;
 
 				_gameSave.flush(); // save
+				_gameZoomSave.flush(); // save
 			} 
 			// iPhone XR/11
 			if ((screenX == 1792 && screenY == 828) || (screenX == 1624 && screenY == 750)) {
 				_gameSave.data.dPadX = 460;
 				_gameSave.data.dPadY = -210;
+				_gameZoomSave.data.zoomVar = 2.15;
 
 				_gameSave.flush(); // save
+				_gameZoomSave.flush(); // save
 			}
+			// iPhone XS/11 Pro Max
+			if (screenX == 2688 && screenY == 1242) {
+				_gameSave.data.dPadX = 950;
+				_gameSave.data.dPadY = -440;
+				_gameZoomSave.data.zoomVar = 4.0;
+
+				_gameSave.flush(); // save
+				_gameZoomSave.flush(); // save
+			}
+			// iPads (should cover most if not all ipads??? maybe???????)
+			if (screenY/screenX >= 0.62 && screenY/screenX <= 0.8) {
+				_gameSave.data.dPadX = 650;
+				_gameSave.data.dPadY = -490;
+				_gameZoomSave.data.zoomVar = 2.6;
+
+				_gameSave.flush(); // save
+				_gameZoomSave.flush(); // save
+			}
+
+			if (screenX == 1280 && screenY == 720) {
+				_gameSave.data.dPadX = 250;
+				_gameSave.data.dPadY = -140;
+				_gameZoomSave.data.zoomVar = 1.6;
+
+				_gameSave.flush(); // save
+				_gameZoomSave.flush(); // save
+			}
+
 			_gameSaveCounter.data.counter = 1;
 			_gameSaveCounter.flush();
 		}
+
+		trace('gamezoomsave is ' + _gameZoomSave.data.zoomVar);
 
 		if (screenX == 1136 && screenY == 640) {
 			actionsX = -300;
@@ -106,7 +147,7 @@ class VirtualPadCamera extends FlxState
 			actionsY = -430;
 			iOSDevice = 2;
 		}
-		if (screenX == 1334 && screenY == 750) {
+		if ((screenX == 1334 && screenY == 750) || (screenX == 1138 && screenY == 639)) {
 			actionsX = -400;
 			actionsY = -220;
 			iOSDevice = 3;
@@ -115,6 +156,21 @@ class VirtualPadCamera extends FlxState
 			actionsX = -460;
 			actionsY = -210;
 			iOSDevice = 4;
+		}
+		if (screenY/screenX >= 0.62 && screenY/screenX <= 0.8) {
+			actionsX = -650;
+			actionsY = -490;
+			iOSDevice = 5;
+		}
+		if (screenX == 2688 && screenY == 1242) {
+			actionsX = -950;
+			actionsY = -440;
+			iOSDevice = 6;
+		}
+
+		if (FlxG.width == 1280 && screenY == 720) {
+			actionsX = -250;
+			actionsY = -140;
 		}
 		_pad.dPad.setPosition(_gameSave.data.dPadX, _gameSave.data.dPadY);
 		_pad.actions.setPosition(actionsX, actionsY);

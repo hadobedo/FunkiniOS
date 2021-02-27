@@ -100,9 +100,7 @@ class FreeplayState extends MusicBeatState
 
 		var bg:FlxSprite = new FlxSprite().loadGraphic('assets/images/menuBGBlue.png');
 		// more hardcoding yuck
-		if (FlxG.width == 2436 && FlxG.height == 1125) {
-			bg.setGraphicSize(2436, 1327);
-		}
+		bg.setGraphicSize(Std.int(FlxG.width), Std.int(FlxG.height*1.18));
 		bg.updateHitbox();
 		bg.screenCenter();
 		add(bg);
@@ -177,18 +175,7 @@ class FreeplayState extends MusicBeatState
 	{
 		super.update(elapsed);
 
-		switch(VirtualPadCamera.iOSDevice) {
-			case 1: // iPhone SE
-				camHUD.zoom = 2.0;
-			case 2: // iPhone X
-				camHUD.zoom = 3.9;
-			case 3: // iPhone X
-				camHUD.zoom = 2.35;
-			case 4: // iPhone XR
-				camHUD.zoom = 2.15;	
-			default: // idk wtf device ur using oops
-				camHUD.zoom = 1.0;
-		}
+		camHUD.zoom = Std.parseFloat(VirtualPadCamera._gameZoomSave.data.zoomVar);
 
 		if (FlxG.sound.music.volume < 0.7)
 		{
@@ -241,9 +228,6 @@ class FreeplayState extends MusicBeatState
 		if (accepted)
 		{
 			var poop:String = Highscore.formatSong(songs[curSelected].toLowerCase(), curDifficulty);
-
-			trace(poop);
-
 			PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].toLowerCase());
 			PlayState.isStoryMode = false;
 			PlayState.storyDifficulty = curDifficulty;

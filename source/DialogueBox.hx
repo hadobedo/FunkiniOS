@@ -34,6 +34,8 @@ class DialogueBox extends FlxSpriteGroup
 	var handSelect:FlxSprite;
 	var bgFade:FlxSprite;
 
+	var tapped = false;
+
 	public function new(talkingRight:Bool = true, ?dialogueList:Array<String>)
 	{
 		super();
@@ -137,6 +139,13 @@ class DialogueBox extends FlxSpriteGroup
 		// add(dialogue);
 
 		this.dialogueList = dialogueList;
+
+		#if mobile
+		for (touch in FlxG.touches.list)
+			if (touch.justPressed) {
+				tapped = true;
+			}
+		#end
 	}
 
 	var dialogueOpened:Bool = false;
@@ -171,8 +180,7 @@ class DialogueBox extends FlxSpriteGroup
 			dialogueStarted = true;
 		}
 
-		#if !mobile
-		if (FlxG.keys.justPressed.ANY)
+		if (VirtualPadCamera._pad.buttonA.justPressed)
 		{
 			remove(dialogue);
 
@@ -210,7 +218,6 @@ class DialogueBox extends FlxSpriteGroup
 				startDialogue();
 			}
 		}
-		#end
 
 		super.update(elapsed);
 	}

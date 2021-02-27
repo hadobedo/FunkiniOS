@@ -18,10 +18,16 @@ class OptionsMenu extends MusicBeatState
 
 	private var padxPos = new FlxText(0, 0, 32);
 	private var padyPos = new FlxText(0, 0, 32);
+
 	private var rightButton:FlxButton;	// dpad move right
 	private var leftButton:FlxButton; // dpad move left
 	private var upButton:FlxButton; // dpad move up
 	private var downButton:FlxButton; // dpad move down
+
+	private var rightButtonScale:FlxButton;	// dpad move right
+	private var leftButtonScale:FlxButton; // dpad move left
+	private var upButtonScale:FlxButton; // dpad move up
+	private var downButtonScale:FlxButton; // dpad move down
 
 	private var rightButtonAction:FlxButton;	// action move right
 	private var leftButtonAction:FlxButton; // action move left
@@ -33,6 +39,7 @@ class OptionsMenu extends MusicBeatState
 
 	var optionsText:FlxText;
 	var alphaText:FlxText;
+	var scaleText:FlxText;
 
 
 	override function create()
@@ -44,6 +51,10 @@ class OptionsMenu extends MusicBeatState
 		alphaText = new FlxText(FlxG.width * 0.7, 10, 0, "", 32);
 		alphaText.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, RIGHT);
 		alphaText.alpha = 0.7;
+
+		scaleText = new FlxText(FlxG.width * 0.7, 10, 0, "", 32);
+		scaleText.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, RIGHT);
+		scaleText.alpha = 0.7;
 
 		camHUD = new FlxCamera();
 		camGame = new FlxCamera();
@@ -70,6 +81,8 @@ class OptionsMenu extends MusicBeatState
 
 		// there is probably a much, much better way of doing this
 		// but if it works ¯\_(ツ)_/¯ lolol
+
+		// POSITION //
 
 		rightButton = new FlxButton(FlxG.width/1.65, FlxG.height/2.75, function() {
 			VirtualPadCamera._gameSave.data.dPadX += 10;
@@ -106,8 +119,6 @@ class OptionsMenu extends MusicBeatState
 
 		downButton = new FlxButton(FlxG.width/1.7, FlxG.height/2.5, function() {
 			VirtualPadCamera._gameSave.data.dPadY += 10;
-			trace('gamesave dPadY = ' + VirtualPadCamera._gameSave.data.dPadY);
-			trace('actual dPadY = ' + VirtualPadCamera.dPadY);
 			VirtualPadCamera._gameSave.flush();
 
 			VirtualPadCamera._pad.dPad.setPosition(VirtualPadCamera._gameSave.data.dPadX, VirtualPadCamera._gameSave.data.dPadY);
@@ -116,6 +127,7 @@ class OptionsMenu extends MusicBeatState
 		downButton.cameras = [camGame];
 		add(downButton);
 
+		// ALPHA //	
 
 		alphaButtonUp = new FlxButton(FlxG.width/1.7, FlxG.height/2.1, function() {
 			VirtualPadCamera.padAlpha = VirtualPadCamera.padAlpha + 0.05;
@@ -132,6 +144,24 @@ class OptionsMenu extends MusicBeatState
 		alphaButtonDown.loadGraphic('assets/images/custompad/downarrow.png', true, 44, 41);
 		alphaButtonDown.cameras = [camGame];
 		add(alphaButtonDown);
+
+		// ZOOM/SCALE //
+
+		upButtonScale = new FlxButton(FlxG.width/1.7, FlxG.height/1.7, function() {
+			VirtualPadCamera._gameZoomSave.data.zoomVar += 0.05;
+			VirtualPadCamera._gameZoomSave.flush();
+		});
+		upButtonScale.loadGraphic('assets/images/custompad/uparrow.png', true, 44, 41);
+		upButtonScale.cameras = [camGame];
+		add(upButtonScale);
+		
+		downButtonScale = new FlxButton(FlxG.width/1.7, FlxG.height/1.5, function() {
+			VirtualPadCamera._gameZoomSave.data.zoomVar -= 0.05;
+			VirtualPadCamera._gameZoomSave.flush();
+		});
+		downButtonScale.loadGraphic('assets/images/custompad/downarrow.png', true, 44, 41);
+		downButtonScale.cameras = [camGame];
+		add(downButtonScale);
 
 		VirtualPadCamera.VPadCamera();
 		add(VirtualPadCamera._pad);
@@ -152,19 +182,24 @@ class OptionsMenu extends MusicBeatState
 		add(alphaText);
 		alphaText.setPosition(FlxG.width/2.3, FlxG.height/2);
 
+		scaleText.cameras = [camGame];
+		scaleText.text = ('BUTTON ZOOM:' + VirtualPadCamera._gameZoomSave.data.zoomVar);
+		add(scaleText);
+		scaleText.setPosition(FlxG.width/2.3, FlxG.height/1.6);
+
 		switch(VirtualPadCamera.iOSDevice) {
 			case 1: // iPhone SE
-				camHUD.zoom = 2.0;
 			case 2: // iPhone X
-				camHUD.zoom = 3.9;
 				camGame.zoom = 2.5;
 			case 3: // iPhone 6/7/8/SE2
-				camHUD.zoom = 2.35;
+				camGame.zoom = 2.75;
 			case 4: // iPhone XR
-				camHUD.zoom = 2.15;	
+				camHUD.zoom = 2.2;	
 			default: // idk wtf device ur using oops
 				camHUD.zoom = 1.0;
 		}
+
+		camHUD.zoom = Std.parseFloat(VirtualPadCamera._gameZoomSave.data.zoomVar);
 
 		var BACK = VirtualPadCamera._pad.buttonB.justPressed;
 
