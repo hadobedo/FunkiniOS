@@ -50,7 +50,7 @@ class DialogueBox extends FlxSpriteGroup
 				FlxG.sound.music.fadeIn(1, 0, 0.8);
 		}
 
-		bgFade = new FlxSprite(-200, -200).makeGraphic(Std.int(FlxG.width * 1.3), Std.int(FlxG.height * 1.3), 0xFFB3DFd8);
+		bgFade = new FlxSprite(-200, -200).makeGraphic(Std.int(FlxG.width * 3.0), Std.int(FlxG.height * 3.0), 0xFFB3DFd8);
 		bgFade.scrollFactor.set();
 		bgFade.alpha = 0;
 		add(bgFade);
@@ -108,14 +108,24 @@ class DialogueBox extends FlxSpriteGroup
 		}
 
 		box.animation.play('normalOpen');
+		if (VirtualPadCamera.iOSDevice == 2 || VirtualPadCamera.iOSDevice == 4 || VirtualPadCamera.iOSDevice == 6) {
+			box.setPosition(FlxG.width*0.01, FlxG.height*0.1);
+			box.setGraphicSize(Std.int(box.width * PlayState.daPixelZoom * 1.2));
+			box.updateHitbox();
+			add(box);
+		} else {
 		box.setGraphicSize(Std.int(box.width * PlayState.daPixelZoom * 0.9));
 		box.updateHitbox();
 		add(box);
+		box.screenCenter(X);
+		}
+		
 
 		handSelect = new FlxSprite(FlxG.width * 0.9, FlxG.height * 0.9).loadGraphic('assets/images/weeb/pixelUI/hand_textbox.png');
 		add(handSelect);
 
 		box.screenCenter(X);
+		
 		portraitLeft.screenCenter(X);
 
 		if (!talkingRight)
@@ -123,12 +133,12 @@ class DialogueBox extends FlxSpriteGroup
 			// box.flipX = true;
 		}
 
-		dropText = new FlxText(242, 502, Std.int(FlxG.width * 0.6), "", 32);
+		dropText = new FlxText(242, 502, Std.int(FlxG.width * 0.4), "", 32);
 		dropText.font = 'Pixel Arial 11 Bold';
 		dropText.color = 0xFFD89494;
 		add(dropText);
 
-		swagDialogue = new FlxTypeText(240, 500, Std.int(FlxG.width * 0.6), "", 32);
+		swagDialogue = new FlxTypeText(240, 500, Std.int(FlxG.width * 0.4), "", 32);
 		swagDialogue.font = 'Pixel Arial 11 Bold';
 		swagDialogue.color = 0xFF3F2021;
 		swagDialogue.sounds = [FlxG.sound.load('assets/sounds/pixelText' + TitleState.soundExt, 0.6)];

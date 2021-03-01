@@ -420,7 +420,6 @@ class PlayState extends MusicBeatState
 
 			var fgTrees:FlxSprite = new FlxSprite(repositionShit + 170, 130).loadGraphic('assets/images/weeb/weebTreesBack.png');
 			fgTrees.scrollFactor.set(0.9, 0.9);
-			add(fgTrees);
 
 			var bgTrees:FlxSprite = new FlxSprite(repositionShit - 380, -800);
 			var treetex = FlxAtlasFrames.fromSpriteSheetPacker('assets/images/weeb/weebTrees.png', 'assets/images/weeb/weebTrees.txt');
@@ -428,7 +427,7 @@ class PlayState extends MusicBeatState
 			bgTrees.animation.add('treeLoop', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18], 12);
 			bgTrees.animation.play('treeLoop');
 			bgTrees.scrollFactor.set(0.85, 0.85);
-			add(bgTrees);
+
 
 			var treeLeaves:FlxSprite = new FlxSprite(repositionShit, -40);
 			treeLeaves.frames = FlxAtlasFrames.fromSparrow('assets/images/weeb/petals.png', 'assets/images/weeb/petals.xml');
@@ -452,6 +451,9 @@ class PlayState extends MusicBeatState
 			bgStreet.updateHitbox();
 			bgTrees.updateHitbox();
 			treeLeaves.updateHitbox();
+
+			add(fgTrees);
+			add(bgTrees);
 
 			bgGirls = new BackgroundGirls(-100, 190);
 			bgGirls.scrollFactor.set(0.9, 0.9);
@@ -1018,7 +1020,7 @@ class PlayState extends MusicBeatState
 
 		if (!paused)
 			FlxG.sound.playMusic("assets/music/" + SONG.song + "_Inst" + TitleState.soundExt, 1, false);
-		// FlxG.sound.music.onComplete = endSong; TEMP COMMENT OUT
+		FlxG.sound.music.onComplete = endSong;
 		vocals.play();
 	}
 
@@ -1647,7 +1649,7 @@ class PlayState extends MusicBeatState
 				{
 					if (daNote.tooLate || !daNote.wasGoodHit)
 					{
-						//health -= 0.0475; TEMP COMMENT OUT
+						health -= 0.0475;
 						vocals.volume = 0;
 					}
 
