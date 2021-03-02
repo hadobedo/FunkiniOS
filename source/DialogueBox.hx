@@ -53,7 +53,9 @@ class DialogueBox extends FlxSpriteGroup
 		bgFade = new FlxSprite(-200, -200).makeGraphic(Std.int(FlxG.width * 3.0), Std.int(FlxG.height * 3.0), 0xFFB3DFd8);
 		bgFade.scrollFactor.set();
 		bgFade.alpha = 0;
-		add(bgFade);
+		if (VirtualPadCamera.iOSDevice != 2 && VirtualPadCamera.iOSDevice != 4 && VirtualPadCamera.iOSDevice != 6) {
+			add(bgFade);
+		}
 
 		new FlxTimer().start(0.83, function(tmr:FlxTimer)
 		{
@@ -62,7 +64,17 @@ class DialogueBox extends FlxSpriteGroup
 				bgFade.alpha = 0.7;
 		}, 5);
 
-		portraitLeft = new FlxSprite(-20, 40);
+
+		if (VirtualPadCamera.iOSDevice == 2 || VirtualPadCamera.iOSDevice == 4 || VirtualPadCamera.iOSDevice == 6) {
+			portraitLeft = new FlxSprite(FlxG.width*0.01, FlxG.height*0.21);
+			portraitRight = new FlxSprite(FlxG.width*0.04, FlxG.height*0.21);
+		} else if (VirtualPadCamera.iOSDevice == 1) {
+			portraitLeft = new FlxSprite(-20, -10);
+			portraitRight = new FlxSprite(0, -10);
+		} else {
+			portraitLeft = new FlxSprite(-20, 40);
+			portraitRight = new FlxSprite(0, 40);
+		}
 		portraitLeft.frames = FlxAtlasFrames.fromSparrow('assets/images/weeb/senpaiPortrait.png', 'assets/images/weeb/senpaiPortrait.xml');
 		portraitLeft.animation.addByPrefix('enter', 'Senpai Portrait Enter', 24, false);
 		portraitLeft.setGraphicSize(Std.int(portraitLeft.width * PlayState.daPixelZoom * 0.9));
@@ -71,7 +83,6 @@ class DialogueBox extends FlxSpriteGroup
 		add(portraitLeft);
 		portraitLeft.visible = false;
 
-		portraitRight = new FlxSprite(0, 40);
 		portraitRight.frames = FlxAtlasFrames.fromSparrow('assets/images/weeb/bfPortrait.png', 'assets/images/weeb/bfPortrait.xml');
 		portraitRight.animation.addByPrefix('enter', 'Boyfriend portrait enter', 24, false);
 		portraitRight.setGraphicSize(Std.int(portraitRight.width * PlayState.daPixelZoom * 0.9));
@@ -113,18 +124,31 @@ class DialogueBox extends FlxSpriteGroup
 			box.setGraphicSize(Std.int(box.width * PlayState.daPixelZoom * 1.2));
 			box.updateHitbox();
 			add(box);
+		} else if (VirtualPadCamera.iOSDevice == 1){
+			box.setPosition(FlxG.width*0.01, FlxG.height*-0.05);
+			box.setGraphicSize(Std.int(box.width * PlayState.daPixelZoom * 0.9));
+			box.updateHitbox();
+			add(box);
+			box.screenCenter(X);
+		} else if (VirtualPadCamera.iOSDevice == 5) {
+			box.setPosition(FlxG.width*0.15, FlxG.height*0.65);
+			box.setGraphicSize(Std.int(box.width * PlayState.daPixelZoom * 1.2));
+			box.updateHitbox();
+			add(box);
 		} else {
-		box.setGraphicSize(Std.int(box.width * PlayState.daPixelZoom * 0.9));
-		box.updateHitbox();
-		add(box);
-		box.screenCenter(X);
+			box.setGraphicSize(Std.int(box.width * PlayState.daPixelZoom * 0.9));
+			box.updateHitbox();
+			add(box);
+			box.screenCenter(X);
 		}
+
+		//(FlxG.width*0.15, FlxG.height*0.65
 		
 
 		handSelect = new FlxSprite(FlxG.width * 0.9, FlxG.height * 0.9).loadGraphic('assets/images/weeb/pixelUI/hand_textbox.png');
 		add(handSelect);
 
-		box.screenCenter(X);
+		// box.screenCenter(X);
 		
 		portraitLeft.screenCenter(X);
 
@@ -133,15 +157,30 @@ class DialogueBox extends FlxSpriteGroup
 			// box.flipX = true;
 		}
 
-		dropText = new FlxText(242, 502, Std.int(FlxG.width * 0.4), "", 32);
+		if (VirtualPadCamera.iOSDevice == 2 || VirtualPadCamera.iOSDevice == 4 || VirtualPadCamera.iOSDevice == 6) {
+			swagDialogue = new FlxTypeText(FlxG.width*0.15, FlxG.height*0.65, Std.int(FlxG.width * 0.4), "", 32);
+			dropText = new FlxText((FlxG.width*0.15) + 2, (FlxG.height*0.65) + 2, Std.int(FlxG.width * 0.4), "", 32);
+		} else if (VirtualPadCamera.iOSDevice == 1) {
+			swagDialogue = new FlxTypeText(FlxG.width*0.15, FlxG.height*0.6, Std.int(FlxG.width * 0.4), "", 26);
+			dropText = new FlxText((FlxG.width*0.15) + 2, (FlxG.height*0.6) + 2, Std.int(FlxG.width * 0.4), "", 26);
+		} else if (VirtualPadCamera.iOSDevice == 5) {
+			swagDialogue = new FlxTypeText(FlxG.width*0.15, FlxG.height*0.65, Std.int(FlxG.width * 0.4), "", 32);
+			dropText = new FlxText((FlxG.width*0.15) + 2, (FlxG.height*0.65) + 2, Std.int(FlxG.width * 0.4), "", 32);
+		} else {
+			dropText = new FlxText(242, 502, Std.int(FlxG.width * 0.72), "", 32);
+			swagDialogue = new FlxTypeText(240, 500, Std.int(FlxG.width * 0.72), "", 32);
+		}
+
 		dropText.font = 'Pixel Arial 11 Bold';
 		dropText.color = 0xFFD89494;
-		add(dropText);
-
-		swagDialogue = new FlxTypeText(240, 500, Std.int(FlxG.width * 0.4), "", 32);
+		dropText.updateHitbox();
+		
 		swagDialogue.font = 'Pixel Arial 11 Bold';
 		swagDialogue.color = 0xFF3F2021;
 		swagDialogue.sounds = [FlxG.sound.load('assets/sounds/pixelText' + TitleState.soundExt, 0.6)];
+		swagDialogue.updateHitbox();
+
+		add(dropText);
 		add(swagDialogue);
 
 		dialogue = new Alphabet(0, 80, "", false, true);

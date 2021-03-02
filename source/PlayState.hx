@@ -416,6 +416,10 @@ class PlayState extends MusicBeatState
 
 			var bgStreet:FlxSprite = new FlxSprite(repositionShit).loadGraphic('assets/images/weeb/weebStreet.png');
 			bgStreet.scrollFactor.set(0.95, 0.95);
+			if (VirtualPadCamera.iOSDevice == 5) {// ipad stretch street
+				bgStreet.setGraphicSize(Std.int(bgStreet.width * 1.5), Std.int(bgStreet.height*1.5));
+				bgStreet.setPosition(repositionShit, 100);
+			}
 			add(bgStreet);
 
 			var fgTrees:FlxSprite = new FlxSprite(repositionShit + 170, 130).loadGraphic('assets/images/weeb/weebTreesBack.png');
@@ -1361,7 +1365,10 @@ class PlayState extends MusicBeatState
 				camGame.zoom = 1.6;
 				camHUD.setPosition(130, 20);
 			case 5: // iPads
-				camGame.zoom = 1.4;
+				camGame.zoom = 1.6;
+			case 6: // iPhone 11 pro, etc
+				camGame.zoom = 1.8;
+				camHUD.setPosition(150, 40);
 		}
 
 		scoreTxt.text = "Score:" + songScore;
@@ -1815,8 +1822,13 @@ class PlayState extends MusicBeatState
 
 		rating.loadGraphic('assets/images/' + pixelShitPart1 + daRating + pixelShitPart2 + ".png");
 		rating.screenCenter();
-		rating.x = coolText.x - 40;
-		rating.y -= 60;
+		
+		if (VirtualPadCamera.iOSDevice == 2 || VirtualPadCamera.iOSDevice == 4 || VirtualPadCamera.iOSDevice == 6) { // rating center
+
+		} else {
+			rating.x = coolText.x - 40;
+			rating.y -= 60;
+		}
 		rating.acceleration.y = 550;
 		rating.velocity.y -= FlxG.random.int(140, 175);
 		rating.velocity.x -= FlxG.random.int(0, 10);

@@ -1,14 +1,8 @@
 package;
 
-import flixel.system.FlxAssets.GraphicVirtualInput;
-import lime.graphics.Image;
 import flixel.FlxG;
-import flixel.text.FlxText;
 import flixel.ui.FlxVirtualPad;
 import flixel.FlxState;
-import flixel.FlxCamera;
-import flixel.graphics.frames.FlxAtlasFrames;
-import PlayState.PlayState;
 import flixel.util.FlxSave;
 
 class VirtualPadCamera extends FlxState
@@ -72,6 +66,8 @@ class VirtualPadCamera extends FlxState
 				_gameSave.data.dPadX = 300;
 				_gameSave.data.dPadY = -155;
 				_gameZoomSave.data.zoomVar = 2.0;
+				_gameZoomSave.data.actionsX = -300;
+				_gameZoomSave.data.actionsY = -155;
 
 				_gameSave.flush(); // save
 				_gameZoomSave.flush(); // save
@@ -81,6 +77,8 @@ class VirtualPadCamera extends FlxState
 				_gameSave.data.dPadX = 950;
 				_gameSave.data.dPadY = -430;
 				_gameZoomSave.data.zoomVar = 3.9;
+				_gameZoomSave.data.actionsX = -950;
+				_gameZoomSave.data.actionsY = -430;
 
 				_gameSave.flush(); // save
 				_gameZoomSave.flush(); // save
@@ -90,6 +88,8 @@ class VirtualPadCamera extends FlxState
 				_gameSave.data.dPadX = 400;
 				_gameSave.data.dPadY = -220;
 				_gameZoomSave.data.zoomVar = 2.35;
+				_gameZoomSave.data.actionsX = -400;
+				_gameZoomSave.data.actionsY = -220;
 
 				_gameSave.flush(); // save
 				_gameZoomSave.flush(); // save
@@ -99,6 +99,8 @@ class VirtualPadCamera extends FlxState
 				_gameSave.data.dPadX = 460;
 				_gameSave.data.dPadY = -210;
 				_gameZoomSave.data.zoomVar = 2.15;
+				_gameZoomSave.data.actionsX = -460;
+				_gameZoomSave.data.actionsY = -210;
 
 				_gameSave.flush(); // save
 				_gameZoomSave.flush(); // save
@@ -108,6 +110,8 @@ class VirtualPadCamera extends FlxState
 				_gameSave.data.dPadX = 950;
 				_gameSave.data.dPadY = -440;
 				_gameZoomSave.data.zoomVar = 4.0;
+				_gameZoomSave.data.actionsX = -950;
+				_gameZoomSave.data.actionsY = -440;
 
 				_gameSave.flush(); // save
 				_gameZoomSave.flush(); // save
@@ -117,6 +121,8 @@ class VirtualPadCamera extends FlxState
 				_gameSave.data.dPadX = 650;
 				_gameSave.data.dPadY = -490;
 				_gameZoomSave.data.zoomVar = 2.6;
+				_gameZoomSave.data.actionsX = -650;
+				_gameZoomSave.data.actionsY = -490;
 
 				_gameSave.flush(); // save
 				_gameZoomSave.flush(); // save
@@ -126,6 +132,8 @@ class VirtualPadCamera extends FlxState
 				_gameSave.data.dPadX = 250;
 				_gameSave.data.dPadY = -140;
 				_gameZoomSave.data.zoomVar = 1.6;
+				_gameZoomSave.data.actionsX = -250;
+				_gameZoomSave.data.actionsY = -140;
 
 				_gameSave.flush(); // save
 				_gameZoomSave.flush(); // save
@@ -136,43 +144,28 @@ class VirtualPadCamera extends FlxState
 		}
 
 		trace('gamezoomsave is ' + _gameZoomSave.data.zoomVar);
-
+		
 		if (screenX == 1136 && screenY == 640) {
-			actionsX = -300;
-			actionsY = -155;
 			iOSDevice = 1;
 		}
 		if (screenX == 2436 && screenY == 1125) {
-			actionsX = -950;
-			actionsY = -430;
 			iOSDevice = 2;
 		}
 		if ((screenX == 1334 && screenY == 750) || (screenX == 1138 && screenY == 639)) {
-			actionsX = -400;
-			actionsY = -220;
 			iOSDevice = 3;
 		}
 		if ((screenX == 1792 && screenY == 828) || (screenX == 1624 && screenY == 750)) {
-			actionsX = -460;
-			actionsY = -210;
 			iOSDevice = 4;
 		}
-		if (screenY/screenX >= 0.62 && screenY/screenX <= 0.8) {
-			actionsX = -650;
-			actionsY = -490;
-			iOSDevice = 5;
-		}
 		if (screenX == 2688 && screenY == 1242) {
-			actionsX = -950;
-			actionsY = -440;
 			iOSDevice = 6;
 		}
-
+		if (screenY/screenX >= 0.62 && screenY/screenX <= 0.8) {
+			iOSDevice = 5;
+		}
 		if (FlxG.width == 1280 && screenY == 720) {
-			actionsX = -250;
-			actionsY = -140;
 		}
 		_pad.dPad.setPosition(_gameSave.data.dPadX, _gameSave.data.dPadY);
-		_pad.actions.setPosition(actionsX, actionsY);
+		_pad.actions.setPosition(_gameZoomSave.data.actionsX, _gameZoomSave.data.actionsY);
     }
 }

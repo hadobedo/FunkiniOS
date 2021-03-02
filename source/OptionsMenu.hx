@@ -37,24 +37,35 @@ class OptionsMenu extends MusicBeatState
 	private var alphaButtonUp:FlxButton; // alpha button up
 	private var alphaButtonDown:FlxButton; // alpha button down
 
+	private var reset:FlxButton;
+
 	var optionsText:FlxText;
 	var alphaText:FlxText;
 	var scaleText:FlxText;
+	var resetText:FlxText;
+
+	var widthThing = 0.0;
+	var widthThingText = 0.0;
+	var widthThingActions = 0.0;
 
 
 	override function create()
 	{
-		optionsText = new FlxText(FlxG.width * 0.7, 10, 0, "", 32);
+		optionsText = new FlxText(FlxG.width * 0.7, 10, 0, "", 20);
 		optionsText.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, RIGHT);
 		optionsText.alpha = 0.7;
 
-		alphaText = new FlxText(FlxG.width * 0.7, 10, 0, "", 32);
+		alphaText = new FlxText(FlxG.width * 0.7, 10, 0, "", 20);
 		alphaText.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, RIGHT);
 		alphaText.alpha = 0.7;
 
-		scaleText = new FlxText(FlxG.width * 0.7, 10, 0, "", 32);
+		scaleText = new FlxText(FlxG.width * 0.7, 10, 0, "", 20);
 		scaleText.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, RIGHT);
 		scaleText.alpha = 0.7;
+
+		resetText = new FlxText(FlxG.width * 0.7, 10, 0, "", 20);
+		resetText.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, RIGHT);
+		resetText.alpha = 0.7;
 
 		camHUD = new FlxCamera();
 		camGame = new FlxCamera();
@@ -67,11 +78,7 @@ class OptionsMenu extends MusicBeatState
 
 		var menuBG:FlxSprite = new FlxSprite().loadGraphic('assets/images/menuDesat.png');
 		menuBG.color = 0xFFea71fd;
-		if (FlxG.width == 2436 && FlxG.height == 1125) {
-			menuBG.setGraphicSize(2436, 1327);
-		} else {
-			menuBG.setGraphicSize(Std.int(menuBG.width * 1.1));
-		}
+		menuBG.setGraphicSize(Std.int(FlxG.width), Std.int(FlxG.height*1.18));
 		menuBG.updateHitbox();
 		menuBG.screenCenter();
 		menuBG.antialiasing = true;
@@ -82,9 +89,22 @@ class OptionsMenu extends MusicBeatState
 		// there is probably a much, much better way of doing this
 		// but if it works ¯\_(ツ)_/¯ lolol
 
-		// POSITION //
+		// update: this is actually fucking awful holy shit
 
-		rightButton = new FlxButton(FlxG.width/1.65, FlxG.height/2.75, function() {
+		//////////
+		// DPAD //
+		//////////
+
+		if (VirtualPadCamera.iOSDevice == 1) {
+			widthThing = 0.05;
+			widthThingText = 0.7;
+			widthThingActions = 0.1;
+		} else {
+			widthThing = 0.0;
+			widthThingText = 0.0;
+		}
+
+		rightButton = new FlxButton((FlxG.width/(1.65-widthThing)), FlxG.height/2.75, function() {
 			VirtualPadCamera._gameSave.data.dPadX += 10;
 
 			VirtualPadCamera._gameSave.flush();
@@ -95,7 +115,7 @@ class OptionsMenu extends MusicBeatState
 		rightButton.cameras = [camGame];
 		add(rightButton);
 
-		leftButton = new FlxButton(FlxG.width/1.75, FlxG.height/2.75, function() {
+		leftButton = new FlxButton((FlxG.width/(1.75+widthThing)), FlxG.height/2.75, function() {
 			VirtualPadCamera._gameSave.data.dPadX -= 10;
 
 			VirtualPadCamera._gameSave.flush();
@@ -126,6 +146,54 @@ class OptionsMenu extends MusicBeatState
 		downButton.loadGraphic('assets/images/custompad/downarrow.png', true, 44, 41);
 		downButton.cameras = [camGame];
 		add(downButton);
+
+		////////////////////
+		// ACTION BUTTONS //
+		////////////////////
+
+		rightButtonAction = new FlxButton((FlxG.width/(1.45-widthThingActions)), FlxG.height/2.75, function() {
+			VirtualPadCamera._gameZoomSave.data.actionsX += 10;
+
+			VirtualPadCamera._gameZoomSave.flush();
+
+			VirtualPadCamera._pad.actions.setPosition(VirtualPadCamera._gameZoomSave.data.actionsX, VirtualPadCamera._gameZoomSave.data.actionsY);
+		});
+		rightButtonAction.loadGraphic('assets/images/custompad/rightarrow.png', true, 44, 41);
+		rightButtonAction.cameras = [camGame];
+		add(rightButtonAction);
+
+		leftButtonAction = new FlxButton((FlxG.width/(1.55-widthThingActions)), FlxG.height/2.75, function() {
+			VirtualPadCamera._gameZoomSave.data.actionsX -= 10;
+
+			VirtualPadCamera._gameZoomSave.flush();
+
+			VirtualPadCamera._pad.actions.setPosition(VirtualPadCamera._gameZoomSave.data.actionsX, VirtualPadCamera._gameZoomSave.data.actionsY);
+		});
+		leftButtonAction.loadGraphic('assets/images/custompad/leftarrow.png', true, 44, 41);
+		leftButtonAction.cameras = [camGame];
+		add(leftButtonAction);
+
+		upButtonAction = new FlxButton(FlxG.width/(1.5-widthThingActions), FlxG.height/3, function() {
+			VirtualPadCamera._gameZoomSave.data.actionsY -= 10;
+
+			VirtualPadCamera._gameZoomSave.flush();
+
+			VirtualPadCamera._pad.actions.setPosition(VirtualPadCamera._gameZoomSave.data.actionsX, VirtualPadCamera._gameZoomSave.data.actionsY);
+		});
+		upButtonAction.loadGraphic('assets/images/custompad/uparrow.png', true, 44, 41);
+		upButtonAction.cameras = [camGame];
+		add(upButtonAction);
+
+		downButtonAction = new FlxButton(FlxG.width/(1.5-widthThingActions), FlxG.height/2.5, function() {
+			VirtualPadCamera._gameZoomSave.data.actionsY += 10;
+
+			VirtualPadCamera._gameZoomSave.flush();
+
+			VirtualPadCamera._pad.actions.setPosition(VirtualPadCamera._gameZoomSave.data.actionsX, VirtualPadCamera._gameZoomSave.data.actionsY);
+		});
+		downButtonAction.loadGraphic('assets/images/custompad/downarrow.png', true, 44, 41);
+		downButtonAction.cameras = [camGame];
+		add(downButtonAction);
 
 		// ALPHA //	
 
@@ -163,6 +231,17 @@ class OptionsMenu extends MusicBeatState
 		downButtonScale.cameras = [camGame];
 		add(downButtonScale);
 
+		reset = new FlxButton(FlxG.width/1.7, FlxG.height/3.75, function() {
+			VirtualPadCamera._gameSaveCounter.data.counter = null;
+			remove(VirtualPadCamera._pad);
+			VirtualPadCamera.VPadCamera();
+			add(VirtualPadCamera._pad);
+			VirtualPadCamera._pad.cameras = [camHUD];
+		});
+		reset.loadGraphic('assets/images/reset.png', true, 44, 41);
+		reset.cameras = [camGame];
+		add(reset);
+
 		VirtualPadCamera.VPadCamera();
 		add(VirtualPadCamera._pad);
 		VirtualPadCamera._pad.cameras = [camHUD];
@@ -172,31 +251,41 @@ class OptionsMenu extends MusicBeatState
 	{
 		super.update(elapsed);
 
+		resetText.cameras = [camGame];
+		resetText.text = ('RESET');
+		add(resetText);
+		resetText.setPosition(FlxG.width/(2.3 + widthThingText), FlxG.height/3.75);
+
 		optionsText.cameras = [camGame];
-		optionsText.text = ('DPAD POSITION:');
+		optionsText.text = ('BUTTON POSITIONS:');
 		add(optionsText);
-		optionsText.setPosition(FlxG.width/2.3, FlxG.height/2.75);
+		optionsText.setPosition(FlxG.width/(2.3 + widthThingText), FlxG.height/2.75);
 
 		alphaText.cameras = [camGame];
 		alphaText.text = ('BUTTON ALPHA:');
 		add(alphaText);
-		alphaText.setPosition(FlxG.width/2.3, FlxG.height/2);
+		alphaText.setPosition(FlxG.width/(2.3 + widthThingText), FlxG.height/2);
 
 		scaleText.cameras = [camGame];
 		scaleText.text = ('BUTTON ZOOM:' + VirtualPadCamera._gameZoomSave.data.zoomVar);
 		add(scaleText);
-		scaleText.setPosition(FlxG.width/2.3, FlxG.height/1.6);
+		scaleText.setPosition(FlxG.width/(2.3 + widthThingText), FlxG.height/1.6);
 
 		switch(VirtualPadCamera.iOSDevice) {
 			case 1: // iPhone SE
+				camGame.zoom = 1.7;
 			case 2: // iPhone X
-				camGame.zoom = 2.5;
+				camGame.zoom = 2.0;
 			case 3: // iPhone 6/7/8/SE2
-				camGame.zoom = 2.75;
+				camGame.zoom = 1.7;
 			case 4: // iPhone XR
-				camHUD.zoom = 2.2;	
+				camGame.zoom = 2.1;
+			case 5:
+				camGame.zoom = 2.0;
+			case 6: 
+				camGame.zoom = 2.0;
 			default: // idk wtf device ur using oops
-				camHUD.zoom = 1.0;
+				camGame.zoom = 1.1;
 		}
 
 		camHUD.zoom = Std.parseFloat(VirtualPadCamera._gameZoomSave.data.zoomVar);

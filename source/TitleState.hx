@@ -17,6 +17,7 @@ import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import openfl.Assets;
 import polymod.Polymod;
+import flixel.FlxCamera;
 
 using StringTools;
 
@@ -35,8 +36,20 @@ class TitleState extends MusicBeatState
 
 	var wackyImage:FlxSprite;
 
+	private var camHUD:FlxCamera;
+	private var camGame:FlxCamera;
+
 	override public function create():Void
 	{
+		camHUD = new FlxCamera();
+		camGame = new FlxCamera();
+		camHUD.bgColor.alpha = 0;
+
+		FlxG.cameras.reset(camGame);
+		FlxG.cameras.add(camHUD);
+
+		FlxCamera.defaultCameras = [camGame];
+
 		Polymod.init({modRoot: "mods", dirs: ['introMod']});
 
 		#if (!web)
@@ -50,6 +63,10 @@ class TitleState extends MusicBeatState
 		// DEBUG BULLSHIT
 
 		super.create();
+
+		VirtualPadCamera.VPadCamera();
+		add(VirtualPadCamera._pad);
+		VirtualPadCamera._pad.cameras = [camHUD];
 
 		// NGio.noLogin(APIStuff.API);
 
@@ -324,6 +341,8 @@ class TitleState extends MusicBeatState
 		}
 
 		super.update(elapsed);
+
+		camHUD.zoom = Std.parseFloat(VirtualPadCamera._gameZoomSave.data.zoomVar);
 	}
 
 	function createCoolText(textArray:Array<String>)
