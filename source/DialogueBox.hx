@@ -65,12 +65,15 @@ class DialogueBox extends FlxSpriteGroup
 		}, 5);
 
 
-		if (VirtualPadCamera.iOSDevice == 2 || VirtualPadCamera.iOSDevice == 4 || VirtualPadCamera.iOSDevice == 6) {
+		if (VirtualPadCamera.iOSDevice == 2 || VirtualPadCamera.iOSDevice == 6) {
 			portraitLeft = new FlxSprite(FlxG.width*0.01, FlxG.height*0.21);
 			portraitRight = new FlxSprite(FlxG.width*0.04, FlxG.height*0.21);
 		} else if (VirtualPadCamera.iOSDevice == 1) {
 			portraitLeft = new FlxSprite(-20, -10);
 			portraitRight = new FlxSprite(0, -10);
+		} else if (VirtualPadCamera.iOSDevice == 4) {
+			portraitLeft = new FlxSprite(FlxG.width*0.01, FlxG.height*0.06);
+			portraitRight = new FlxSprite(FlxG.width*0.04, FlxG.height*0.06);
 		} else {
 			portraitLeft = new FlxSprite(-20, 40);
 			portraitRight = new FlxSprite(0, 40);
@@ -119,7 +122,7 @@ class DialogueBox extends FlxSpriteGroup
 		}
 
 		box.animation.play('normalOpen');
-		if (VirtualPadCamera.iOSDevice == 2 || VirtualPadCamera.iOSDevice == 4 || VirtualPadCamera.iOSDevice == 6) {
+		if (VirtualPadCamera.iOSDevice == 2 || VirtualPadCamera.iOSDevice == 6) {
 			box.setPosition(FlxG.width*0.01, FlxG.height*0.1);
 			box.setGraphicSize(Std.int(box.width * PlayState.daPixelZoom * 1.2));
 			box.updateHitbox();
@@ -133,6 +136,11 @@ class DialogueBox extends FlxSpriteGroup
 		} else if (VirtualPadCamera.iOSDevice == 5) {
 			box.setPosition(FlxG.width*0.15, FlxG.height*0.65);
 			box.setGraphicSize(Std.int(box.width * PlayState.daPixelZoom * 1.2));
+			box.updateHitbox();
+			add(box);
+		} else if (VirtualPadCamera.iOSDevice == 4) {
+			box.setPosition(FlxG.width*0.01, FlxG.height*-0.05);
+			box.setGraphicSize(Std.int(box.width * PlayState.daPixelZoom * 0.9));
 			box.updateHitbox();
 			add(box);
 		} else {
@@ -157,7 +165,7 @@ class DialogueBox extends FlxSpriteGroup
 			// box.flipX = true;
 		}
 
-		if (VirtualPadCamera.iOSDevice == 2 || VirtualPadCamera.iOSDevice == 4 || VirtualPadCamera.iOSDevice == 6) {
+		if (VirtualPadCamera.iOSDevice == 2 ||  VirtualPadCamera.iOSDevice == 6) {
 			swagDialogue = new FlxTypeText(FlxG.width*0.15, FlxG.height*0.65, Std.int(FlxG.width * 0.4), "", 32);
 			dropText = new FlxText((FlxG.width*0.15) + 2, (FlxG.height*0.65) + 2, Std.int(FlxG.width * 0.4), "", 32);
 		} else if (VirtualPadCamera.iOSDevice == 1) {
@@ -166,6 +174,9 @@ class DialogueBox extends FlxSpriteGroup
 		} else if (VirtualPadCamera.iOSDevice == 5) {
 			swagDialogue = new FlxTypeText(FlxG.width*0.15, FlxG.height*0.65, Std.int(FlxG.width * 0.4), "", 32);
 			dropText = new FlxText((FlxG.width*0.15) + 2, (FlxG.height*0.65) + 2, Std.int(FlxG.width * 0.4), "", 32);
+		} else if (VirtualPadCamera.iOSDevice == 4){
+			swagDialogue = new FlxTypeText(FlxG.width*0.15, FlxG.height*0.55, Std.int(FlxG.width * 0.4), "", 26);
+			dropText = new FlxText((FlxG.width*0.15) + 2, (FlxG.height*0.55) + 2, Std.int(FlxG.width * 0.4), "", 26);
 		} else {
 			dropText = new FlxText(242, 502, Std.int(FlxG.width * 0.72), "", 32);
 			swagDialogue = new FlxTypeText(240, 500, Std.int(FlxG.width * 0.72), "", 32);

@@ -60,9 +60,32 @@ class VirtualPadCamera extends FlxState
 
 		trace(_gameSaveCounter.data.counter);
 
+		trace('gamezoomsave is ' + _gameZoomSave.data.zoomVar);
+		
+		if (screenX == 1136 && screenY == 640) { // SE
+			iOSDevice = 1;
+		}
+		if (screenX == 2436 && screenY == 1125) { // X/XS/iP11
+			iOSDevice = 2;
+		}
+		if ((screenX == 1334 && screenY == 750) || (screenX == 1138 && screenY == 639)) { //6/7/8/SE2
+			iOSDevice = 3;
+		}
+		if ((screenX == 1792 && screenY == 828) || (screenX == 1624 && screenY == 750)) { //XR/11
+			iOSDevice = 4;
+		}
+		if ((screenX == 2688 && screenY == 1242) || (screenX == 2532 && screenY == 1170) || (screenX == 2340 && screenY == 1080) || (screenX == 2788 && screenY == 1284)) { // XS MAX/11 PRO MAX/12/12PRO/12promax/12 mini ???
+			iOSDevice = 6;
+		}
+		if (screenY/screenX >= 0.62 && screenY/screenX <= 0.8) {
+			iOSDevice = 5;
+		}
+		if (FlxG.width == 1280 && screenY == 720) {
+		}
+
 		if (_gameSaveCounter.data.counter == null) {
 			// iPhone 5s/SE
-			if (screenX == 1136 && screenY == 640) {
+			if (iOSDevice == 1) {
 				_gameSave.data.dPadX = 300;
 				_gameSave.data.dPadY = -155;
 				_gameZoomSave.data.zoomVar = 2.0;
@@ -73,7 +96,7 @@ class VirtualPadCamera extends FlxState
 				_gameZoomSave.flush(); // save
 			} 
 			// iPhone X
-			if (screenX == 2436 && screenY == 1125) {
+			if (iOSDevice == 2) {
 				_gameSave.data.dPadX = 950;
 				_gameSave.data.dPadY = -430;
 				_gameZoomSave.data.zoomVar = 3.9;
@@ -84,7 +107,7 @@ class VirtualPadCamera extends FlxState
 				_gameZoomSave.flush(); // save
 			}
 			// iPhone 6/7/8/SE2 or SE with modded resolution?
-			if ((screenX == 1334 && screenY == 750) || (screenX == 1138 && screenY == 639)) {
+			if (iOSDevice == 3) {
 				_gameSave.data.dPadX = 400;
 				_gameSave.data.dPadY = -220;
 				_gameZoomSave.data.zoomVar = 2.35;
@@ -95,7 +118,7 @@ class VirtualPadCamera extends FlxState
 				_gameZoomSave.flush(); // save
 			} 
 			// iPhone XR/11
-			if ((screenX == 1792 && screenY == 828) || (screenX == 1624 && screenY == 750)) {
+			if (iOSDevice == 4) {
 				_gameSave.data.dPadX = 460;
 				_gameSave.data.dPadY = -210;
 				_gameZoomSave.data.zoomVar = 2.15;
@@ -105,8 +128,8 @@ class VirtualPadCamera extends FlxState
 				_gameSave.flush(); // save
 				_gameZoomSave.flush(); // save
 			}
-			// iPhone XS/11 Pro Max
-			if (screenX == 2688 && screenY == 1242) {
+			// iPhone XS/11 Pro Max/etc
+			if (iOSDevice == 6) {
 				_gameSave.data.dPadX = 950;
 				_gameSave.data.dPadY = -440;
 				_gameZoomSave.data.zoomVar = 4.0;
@@ -117,7 +140,7 @@ class VirtualPadCamera extends FlxState
 				_gameZoomSave.flush(); // save
 			}
 			// iPads (should cover most if not all ipads??? maybe???????)
-			if (screenY/screenX >= 0.62 && screenY/screenX <= 0.8) {
+			if (iOSDevice == 5) {
 				_gameSave.data.dPadX = 650;
 				_gameSave.data.dPadY = -490;
 				_gameZoomSave.data.zoomVar = 2.6;
@@ -143,28 +166,6 @@ class VirtualPadCamera extends FlxState
 			_gameSaveCounter.flush();
 		}
 
-		trace('gamezoomsave is ' + _gameZoomSave.data.zoomVar);
-		
-		if (screenX == 1136 && screenY == 640) {
-			iOSDevice = 1;
-		}
-		if (screenX == 2436 && screenY == 1125) {
-			iOSDevice = 2;
-		}
-		if ((screenX == 1334 && screenY == 750) || (screenX == 1138 && screenY == 639)) {
-			iOSDevice = 3;
-		}
-		if ((screenX == 1792 && screenY == 828) || (screenX == 1624 && screenY == 750)) {
-			iOSDevice = 4;
-		}
-		if (screenX == 2688 && screenY == 1242) {
-			iOSDevice = 6;
-		}
-		if (screenY/screenX >= 0.62 && screenY/screenX <= 0.8) {
-			iOSDevice = 5;
-		}
-		if (FlxG.width == 1280 && screenY == 720) {
-		}
 		_pad.dPad.setPosition(_gameSave.data.dPadX, _gameSave.data.dPadY);
 		_pad.actions.setPosition(_gameZoomSave.data.actionsX, _gameZoomSave.data.actionsY);
     }

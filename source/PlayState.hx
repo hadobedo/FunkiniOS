@@ -1362,12 +1362,12 @@ class PlayState extends MusicBeatState
 				camGame.zoom = 1.8;
 				camHUD.setPosition(150, 40);
 			case 4: // iPhone XR
-				camGame.zoom = 1.6;
+				camGame.zoom = 1.2;
 				camHUD.setPosition(130, 20);
 			case 5: // iPads
 				camGame.zoom = 1.6;
 			case 6: // iPhone 11 pro, etc
-				camGame.zoom = 1.8;
+				camGame.zoom = 1.5;
 				camHUD.setPosition(150, 40);
 		}
 

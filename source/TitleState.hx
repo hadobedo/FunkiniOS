@@ -64,10 +64,6 @@ class TitleState extends MusicBeatState
 
 		super.create();
 
-		VirtualPadCamera.VPadCamera();
-		add(VirtualPadCamera._pad);
-		VirtualPadCamera._pad.cameras = [camHUD];
-
 		// NGio.noLogin(APIStuff.API);
 
 		// #if ng
@@ -100,6 +96,13 @@ class TitleState extends MusicBeatState
 		#else
 		startIntro();
 		#end
+
+		#if !mobile
+		VirtualPadCamera.VPadCamera();
+		add(VirtualPadCamera._pad);
+		VirtualPadCamera._pad.cameras = [camHUD];
+		#end
+
 	}
 
 	var logoBl:FlxSprite;
@@ -263,7 +266,7 @@ class TitleState extends MusicBeatState
 		var pressedEnter:Bool = false;
 
 		#if !mobile
-		if (FlxG.keys.justPressed.ENTER == true) {
+		if (FlxG.keys.justPressed.ENTER == true || VirtualPadCamera._pad.buttonA.justPressed) {
 			pressedEnter = true;
 		}
 		#end
@@ -342,7 +345,9 @@ class TitleState extends MusicBeatState
 
 		super.update(elapsed);
 
-		camHUD.zoom = Std.parseFloat(VirtualPadCamera._gameZoomSave.data.zoomVar);
+		#if !mobile
+			camHUD.zoom = Std.parseFloat(VirtualPadCamera._gameZoomSave.data.zoomVar);
+		#end
 	}
 
 	function createCoolText(textArray:Array<String>)
