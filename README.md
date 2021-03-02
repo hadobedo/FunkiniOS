@@ -1,6 +1,6 @@
-### FunkiniOS, a port of Friday Night Funkin' to iOS Devices (and Safari)
+# FunkiniOS, a port of Friday Night Funkin' to iOS Devices (and Safari)
 
-# It's finally ready! This is my native port of Friday Night Funkin' by ninjamuffin99, PhantomArcade and evilsk8r to iOS devices/Safari!
+### It's finally ready! This is my native port of Friday Night Funkin' by ninjamuffin99, PhantomArcade and evilsk8r to iOS devices/Safari!
 
 What I've done:
 - add scaling for most iOS devices so the game looks and plays well on almost every iOS device. 
