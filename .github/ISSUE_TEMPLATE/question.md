@@ -3,6 +3,8 @@ name: Question
 about: Ask a general question
 title: 'Question: '
 labels: question
+assignees: ''
+
 ---
 
 # Please check for duplicates or similar issues before asking your question.
