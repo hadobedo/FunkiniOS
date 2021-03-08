@@ -329,11 +329,10 @@ class TitleState extends MusicBeatState
 				#end
 
 				#if mobile
-				FlxG.switchState(new OptionsMenu());
+				FlxG.switchState(new MainMenuState());
 				#end
 
-				// FlxG.switchState(new MainMenuState());
-				FlxG.switchState(new OptionsMenu());
+				FlxG.switchState(new MainMenuState());
 
 			});
 			// FlxG.sound.play('assets/music/titleShoot' + TitleState.soundExt, 0.7);
