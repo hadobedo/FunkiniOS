@@ -1369,6 +1369,8 @@ class PlayState extends MusicBeatState
 			case 6: // iPhone 11 pro, etc
 				camGame.zoom = 1.5;
 				camHUD.setPosition(150, 40);
+			case 7: // iP Plus Models
+				camGame.zoom = 1.7;
 		}
 
 		scoreTxt.text = "Score:" + songScore;

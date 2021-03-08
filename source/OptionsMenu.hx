@@ -284,6 +284,8 @@ class OptionsMenu extends MusicBeatState
 				camGame.zoom = 2.0;
 			case 6: 
 				camGame.zoom = 2.0;
+			case 7: 
+				camGame.zoom = 1.7;
 			default: // idk wtf device ur using oops
 				camGame.zoom = 1.1;
 		}
