@@ -61,6 +61,8 @@ class VirtualPadCamera extends FlxState
 		trace(_gameSaveCounter.data.counter);
 
 		trace('gamezoomsave is ' + _gameZoomSave.data.zoomVar);
+		trace('x is ' + _gameZoomSave.data.actionsX);
+		trace('y is ' + _gameZoomSave.data.actionsY);
 		
 		if (screenX == 1136 && screenY == 640) { // SE
 			iOSDevice = 1;
@@ -73,14 +75,17 @@ class VirtualPadCamera extends FlxState
 		}
 		if ((screenX == 1792 && screenY == 828) || (screenX == 1624 && screenY == 750)) { //XR/11
 			iOSDevice = 4;
-		}
+		}	// da rest lmfao
 		if ((screenX == 2688 && screenY == 1242) || (screenX == 2532 && screenY == 1170) || (screenX == 2340 && screenY == 1080) || (screenX == 2788 && screenY == 1284)) { // XS MAX/11 PRO MAX/12/12PRO/12promax/12 mini ???
 			iOSDevice = 6;
-		}
+		}	// ipad
 		if (screenY/screenX >= 0.62 && screenY/screenX <= 0.8) {
 			iOSDevice = 5;
-		}
+		}	//safari/desktop
 		if (FlxG.width == 1280 && screenY == 720) {
+		}
+		if ((screenX == 1920 && screenY == 1080) || (screenX == 2208 && screenY == 1242)){
+			iOSDevice = 7;
 		}
 
 		if (_gameSaveCounter.data.counter == null) {
@@ -157,6 +162,17 @@ class VirtualPadCamera extends FlxState
 				_gameZoomSave.data.zoomVar = 1.6;
 				_gameZoomSave.data.actionsX = -250;
 				_gameZoomSave.data.actionsY = -140;
+
+				_gameSave.flush(); // save
+				_gameZoomSave.flush(); // save
+			}
+			
+			if (iOSDevice == 7) { // 6+, 7+, 8+
+				_gameSave.data.dPadX = 780;
+				_gameSave.data.dPadY = -440;
+				_gameZoomSave.data.zoomVar = 3.3;
+				_gameZoomSave.data.actionsX = -780;
+				_gameZoomSave.data.actionsY = -440;
 
 				_gameSave.flush(); // save
 				_gameZoomSave.flush(); // save
