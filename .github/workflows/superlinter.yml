@@ -6,5 +6,4 @@ jobs:
         with:
           haxe-version: 4.0.5
       - run: |
-          haxe -version
-          haxelib install hxnodejs
+          lime test ios
