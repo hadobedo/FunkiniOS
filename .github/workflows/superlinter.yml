@@ -4,7 +4,7 @@ on:
   [push, workflow_dispatch]
 jobs:
   build:
-    runs-on: [ubuntu-latest, macos-latest]
+    runs-on: macOS-latest
     steps:
       - uses: krdlab/setup-haxe@v1
         with:
