@@ -11,4 +11,4 @@ jobs:
           haxe-version: 4.0.5
       - run: |
           haxelib install lime
-          haxelib lime test ios
+          haxelib run lime test ios
