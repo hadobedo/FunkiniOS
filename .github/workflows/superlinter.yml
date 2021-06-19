@@ -11,4 +11,7 @@ jobs:
           haxe-version: 4.0.5
       - run: |
           haxelib install lime
-          ls
+         
+      - name: Checking directories
+        run: ls
+      
