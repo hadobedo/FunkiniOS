@@ -18,7 +18,7 @@ jobs:
         run: brew install haxe
 
       - name: setup haxelib repo
-        run: haxelib setup
+        run: haxelib setup .
 
       - name: Set Up environment pt. IV
         run: haxelib install lime
