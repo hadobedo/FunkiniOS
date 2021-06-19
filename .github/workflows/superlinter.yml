@@ -4,7 +4,7 @@ on:
   [push, workflow_dispatch]
 jobs:
   build:
-    runs-on: macos-11
+    runs-on: macos-11.0
     steps:
       - name: Set up build environment
         uses: maxim-lobanov/setup-xcode@v1
