@@ -30,7 +30,7 @@ jobs:
            haxelib install newgrounds
            haxelib install openfl
            haxelib git flixel-addons https://github.com/HaxeFlixel/flixel-addons
-          
+           haxelib install hxcpp
             
 
       - name: building!
