@@ -28,6 +28,7 @@ jobs:
            haxelib install flixel-ui
            haxelib install hscript
            haxelib install newgrounds
+           haxelib install openfl
           
             
 
