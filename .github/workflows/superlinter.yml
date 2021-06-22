@@ -9,7 +9,7 @@ jobs:
       - name: Set up build environment
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '9'
+          xcode-version: '10.3.0'
 
       - name: Set up build environment pt. II
         uses: actions/checkout@v2
