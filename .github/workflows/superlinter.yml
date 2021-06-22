@@ -36,7 +36,9 @@ jobs:
             
 
       - name: building!
-        run: haxelib run lime test ios
+        run: | 
+           ls
+           haxelib run lime test ios
       
       - name: checking directories
         run: ls
