@@ -121,5 +121,8 @@
 
 	<!-- <haxedef name="SKIP_TO_PLAYSTATE" if="debug" /> -->
 	<haxedef name="NG_LOGIN" if="newgrounds" />
+
+	<!-- Fixes Metal issue on XCode 12 and above (?)-->
+	<dependency name="Metal.framework" if="ios" />
 	
 </project>
