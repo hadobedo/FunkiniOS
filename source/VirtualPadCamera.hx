@@ -18,12 +18,13 @@ class VirtualPadCamera extends FlxState
 	public static var _gameSave = new FlxSave(); // initialize
 	public static var _gameSaveCounter = new FlxSave(); // initialize
 	public static var _gameZoomSave = new FlxSave(); // initialize
+	public static var _gameSaveMode = new FlxSave(); // initialize
 	public static var zoomVar = 1.0;
 
 	override public function create()
 	{
 		super.create();
-        }
+    }
 
 
 	override public function update(elapsed:Float)
@@ -36,6 +37,7 @@ class VirtualPadCamera extends FlxState
 		_gameSave.bind("DPadPos"); // bind to the named save slot
 		_gameSaveCounter.bind("counter");
 		_gameZoomSave.bind("zoom");
+		_gameSaveMode.bind("controlmode");
 
         var screenX = FlxG.width;
         var screenY = FlxG.height;
@@ -178,10 +180,14 @@ class VirtualPadCamera extends FlxState
 				_gameZoomSave.flush(); // save
 			}
 
+			_gameSaveMode.data.mode = 0; // dpad as default
+			_gameSaveMode.flush(); // save
+
 			_gameSaveCounter.data.counter = 1;
 			_gameSaveCounter.flush();
 		}
 
+		OptionsMenu.mode = _gameSaveMode.data.mode;
 		_pad.dPad.setPosition(_gameSave.data.dPadX, _gameSave.data.dPadY);
 		_pad.actions.setPosition(_gameZoomSave.data.actionsX, _gameZoomSave.data.actionsY);
     }

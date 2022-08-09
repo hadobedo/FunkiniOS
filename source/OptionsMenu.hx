@@ -8,12 +8,15 @@ import flixel.text.FlxText;
 import flixel.FlxCamera;
 import flixel.group.FlxGroup;
 import flixel.util.FlxColor;
+import flixel.addons.ui.FlxUIButton;
+import Hitbox;
 
 class OptionsMenu extends MusicBeatState
 {
 	// i kinda jacked this menu to serve as a place to adjust flxvirtualpad positions, whoops
 
 	private var camHUD:FlxCamera;
+	private var camHitbox:FlxCamera;
 	private var camGame:FlxCamera;
 
 	private var padxPos = new FlxText(0, 0, 32);
@@ -38,6 +41,7 @@ class OptionsMenu extends MusicBeatState
 	private var alphaButtonDown:FlxButton; // alpha button down
 
 	private var reset:FlxButton;
+	var hitbox:Hitbox;
 
 	var optionsText:FlxText;
 	var alphaText:FlxText;
@@ -47,7 +51,7 @@ class OptionsMenu extends MusicBeatState
 	var widthThing = 0.0;
 	var widthThingText = 0.0;
 	var widthThingActions = 0.0;
-
+	public static var mode:Int;
 
 	override function create()
 	{
@@ -69,10 +73,13 @@ class OptionsMenu extends MusicBeatState
 
 		camHUD = new FlxCamera();
 		camGame = new FlxCamera();
+		camHitbox = new FlxCamera();
 		camHUD.bgColor.alpha = 0;
+		camHitbox.bgColor.alpha = 0;
 
 		FlxG.cameras.reset(camGame);
 		FlxG.cameras.add(camHUD);
+		FlxG.cameras.add(camHitbox);
 
 		FlxCamera.defaultCameras = [camGame];
 
@@ -86,10 +93,32 @@ class OptionsMenu extends MusicBeatState
 
 		super.create();
 
+
+		var controlMode = new FlxUIButton(FlxG.width/2.7, FlxG.height/3.75, "hitbox control", () -> 
+		{
+			if (mode > 1)
+				mode = 0;
+			else 
+				mode ++;
+
+			VirtualPadCamera._gameSaveMode.data.mode = mode;
+			VirtualPadCamera._gameSaveMode.flush();
+		});
+		add(controlMode);
+
 		// there is probably a much, much better way of doing this
 		// but if it works ¯\_(ツ)_/¯ lolol
 
 		// update: this is actually fucking awful holy shit
+
+		////////////
+		// HITBOX //
+		////////////
+
+		hitbox = new Hitbox();
+		hitbox.visible = false;
+		add(hitbox);
+		hitbox.cameras = [camHitbox];
 
 		//////////
 		// DPAD //
@@ -232,6 +261,10 @@ class OptionsMenu extends MusicBeatState
 		add(downButtonScale);
 
 		reset = new FlxButton(FlxG.width/1.7, FlxG.height/3.75, function() {
+			mode = 0;
+			VirtualPadCamera._gameSaveMode.data.mode = mode;
+			VirtualPadCamera._gameSaveMode.flush();
+
 			VirtualPadCamera._gameSaveCounter.data.counter = null;
 			remove(VirtualPadCamera._pad);
 			VirtualPadCamera.VPadCamera();
@@ -295,8 +328,25 @@ class OptionsMenu extends MusicBeatState
 		var BACK = VirtualPadCamera._pad.buttonB.justPressed;
 
 		if (BACK)
-			{
-				FlxG.switchState(new MainMenuState());
-			}
+		{
+			FlxG.switchState(new MainMenuState());
+		}
+
+		if (mode == 1)
+		{
+			hitbox.visible = true;
+			VirtualPadCamera._pad.buttonLeft.visible = false;	
+			VirtualPadCamera._pad.buttonDown.visible = false;	
+			VirtualPadCamera._pad.buttonUp.visible = false;	
+			VirtualPadCamera._pad.buttonRight.visible = false;	
+		}
+		else 
+		{
+			hitbox.visible = false;
+			VirtualPadCamera._pad.buttonLeft.visible = true;	
+			VirtualPadCamera._pad.buttonDown.visible = true;	
+			VirtualPadCamera._pad.buttonUp.visible = true;	
+			VirtualPadCamera._pad.buttonRight.visible = true;	
+		}	
 	}
 }
