@@ -41,11 +41,8 @@ class Hitbox extends FlxSpriteGroup
 
 		hitbox_hint.alpha = 0.2;
 
-		if (sizex != 320)
-		{
-		hitbox_hint.setGraphicSize(FlxG.width);
+		hitbox_hint.setGraphicSize(FlxG.width, FlxG.height);
 		hitbox_hint.updateHitbox();
-		}
 			
 		add(hitbox_hint);
 

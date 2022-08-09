@@ -94,7 +94,7 @@ class OptionsMenu extends MusicBeatState
 		super.create();
 
 
-		var controlMode = new FlxUIButton(FlxG.width/1.7, FlxG.height/4.75, "hitbox control", () -> 
+		var controlMode = new FlxUIButton(FlxG.width/2.7, FlxG.height/3.75, "hitbox control", () -> 
 		{
 			if (mode > 1)
 				mode = 0;
