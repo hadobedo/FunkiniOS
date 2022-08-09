@@ -26,6 +26,7 @@ import flixel.util.FlxTimer;
 import flixel.util.FlxSave;
 import flixel.input.gamepad.FlxGamepad;
 import flixel.ui.FlxButton;
+import Hitbox;
 
 using StringTools;
 
@@ -95,6 +96,7 @@ class PlayState extends MusicBeatState
 	private var camHUD:FlxCamera;
 	private var camGame:FlxCamera;
 	private var camControlHUD:FlxCamera;
+	private var camHitBox:FlxCamera;
 
 
 	var dialogue:Array<String> = ['blah blah blah', 'coolswag'];
@@ -132,6 +134,7 @@ class PlayState extends MusicBeatState
 	public static var daPixelZoom:Float = 6;
 
 	var inCutscene:Bool = false;
+	var hitbox:Hitbox;
 
 	override public function create()
 	{
@@ -139,12 +142,15 @@ class PlayState extends MusicBeatState
 		camGame = new FlxCamera();
 		camHUD = new FlxCamera();
 		camControlHUD = new FlxCamera();
+		camHitBox = new FlxCamera();
 		camControlHUD.bgColor.alpha = 0;
 		camHUD.bgColor.alpha = 0;
+		camHitBox.bgColor.alpha = 0;
 
 		FlxG.cameras.reset(camGame);
 		FlxG.cameras.add(camControlHUD);
 		FlxG.cameras.add(camHUD);
+		FlxG.cameras.add(camHitBox);
 
 		FlxCamera.defaultCameras = [camGame];
 
@@ -759,6 +765,7 @@ class PlayState extends MusicBeatState
 					blackScreen.scrollFactor.set();
 					camHUD.visible = false;
 					camControlHUD.visible = false;
+					camHitBox.visible = false;
 
 					new FlxTimer().start(0.1, function(tmr:FlxTimer)
 					{
@@ -773,6 +780,7 @@ class PlayState extends MusicBeatState
 						{
 							camHUD.visible = true;
 							camControlHUD.visible = true;
+							camHitBox.visible = true;
 							remove(blackScreen);
 							FlxTween.tween(FlxG.camera, {zoom: defaultCamZoom}, 2.5, {
 								ease: FlxEase.quadInOut,
@@ -805,10 +813,30 @@ class PlayState extends MusicBeatState
 
 		super.create();
 
+		hitbox = new Hitbox();
+		add(hitbox);		
+		hitbox.cameras = [camHitBox];
+
 		VirtualPadCamera.VPadCamera();
 		add(VirtualPadCamera._pad);
 		VirtualPadCamera._pad.cameras = [camControlHUD];
 
+		if (OptionsMenu.mode == 1)
+		{
+			hitbox.visible = true;
+			VirtualPadCamera._pad.buttonLeft.visible = false;	
+			VirtualPadCamera._pad.buttonDown.visible = false;	
+			VirtualPadCamera._pad.buttonUp.visible = false;	
+			VirtualPadCamera._pad.buttonRight.visible = false;	
+		}
+		else 
+		{
+			hitbox.visible = false;
+			VirtualPadCamera._pad.buttonLeft.visible = true;	
+			VirtualPadCamera._pad.buttonDown.visible = true;	
+			VirtualPadCamera._pad.buttonUp.visible = true;	
+			VirtualPadCamera._pad.buttonRight.visible = true;	
+		}	
 
 	}
 
@@ -1743,6 +1771,7 @@ class PlayState extends MusicBeatState
 					add(blackShit);
 					camHUD.visible = false;
 					camControlHUD.visible = false;
+					camHitBox.visible = false;
 
 					FlxG.sound.play('assets/sounds/Lights_Shut_off' + TitleState.soundExt);
 				}
@@ -1933,21 +1962,46 @@ class PlayState extends MusicBeatState
 
 		var gamepad:FlxGamepad = FlxG.gamepads.lastActive;
 		var gamepadStatus = FlxG.gamepads.numActiveGamepads; 
-		
-		var up = VirtualPadCamera._pad.buttonUp.pressed;
-		var right = VirtualPadCamera._pad.buttonRight.pressed;
-		var down = VirtualPadCamera._pad.buttonDown.pressed;
-		var left = VirtualPadCamera._pad.buttonLeft.pressed;
 
-		var upP = VirtualPadCamera._pad.buttonUp.justPressed;
-		var rightP = VirtualPadCamera._pad.buttonRight.justPressed;
-		var downP = VirtualPadCamera._pad.buttonDown.justPressed;
-		var leftP = VirtualPadCamera._pad.buttonLeft.justPressed;
+		var up, right, down, left;
+		var upP, rightP, downP, leftP;
+		var upR, rightR, downR, leftR;
 
-		var upR = VirtualPadCamera._pad.buttonUp.justReleased;
-		var rightR = VirtualPadCamera._pad.buttonRight.justReleased;
-		var downR = VirtualPadCamera._pad.buttonDown.justReleased;
-		var leftR = VirtualPadCamera._pad.buttonLeft.justReleased;
+		//sorry for this shit
+		if (OptionsMenu.mode == 1)
+		{
+			up = hitbox.buttonUp.pressed;
+			right = hitbox.buttonRight.pressed;
+			down = hitbox.buttonDown.pressed;
+			left = hitbox.buttonLeft.pressed;
+
+			upP = hitbox.buttonUp.justPressed;
+			rightP = hitbox.buttonRight.justPressed;
+			downP = hitbox.buttonDown.justPressed;
+			leftP = hitbox.buttonLeft.justPressed;
+
+			upR = hitbox.buttonUp.justReleased;
+			rightR = hitbox.buttonRight.justReleased;
+			downR = hitbox.buttonDown.justReleased;
+			leftR = hitbox.buttonLeft.justReleased;
+		}
+		else 
+		{
+			up = VirtualPadCamera._pad.buttonUp.pressed;
+			right = VirtualPadCamera._pad.buttonRight.pressed;
+			down = VirtualPadCamera._pad.buttonDown.pressed;
+			left = VirtualPadCamera._pad.buttonLeft.pressed;
+
+			upP = VirtualPadCamera._pad.buttonUp.justPressed;
+			rightP = VirtualPadCamera._pad.buttonRight.justPressed;
+			downP = VirtualPadCamera._pad.buttonDown.justPressed;
+			leftP = VirtualPadCamera._pad.buttonLeft.justPressed;
+
+			upR = VirtualPadCamera._pad.buttonUp.justReleased;
+			rightR = VirtualPadCamera._pad.buttonRight.justReleased;
+			downR = VirtualPadCamera._pad.buttonDown.justReleased;
+			leftR = VirtualPadCamera._pad.buttonLeft.justReleased;
+		}	
 
 		// if (gamepadStatus != 0) {
 		// 	up = gamepad.pressed.DPAD_UP;
@@ -2198,10 +2252,22 @@ class PlayState extends MusicBeatState
 	{
 		// just double pasting this shit cuz fuk u
 		// REDO THIS SYSTEM!
-		var upP = VirtualPadCamera._pad.buttonUp.justPressed;
-		var rightP = VirtualPadCamera._pad.buttonRight.justPressed;
-		var downP = VirtualPadCamera._pad.buttonDown.justPressed;
-		var leftP = VirtualPadCamera._pad.buttonLeft.justPressed;
+		var upP, rightP, downP, leftP;
+
+		if (OptionsMenu.mode == 1)
+		{
+			upP = hitbox.buttonUp.justPressed;
+			rightP = hitbox.buttonRight.justPressed;
+			downP = hitbox.buttonDown.justPressed;
+			leftP = hitbox.buttonLeft.justPressed;
+		}
+		else 
+		{
+			upP = VirtualPadCamera._pad.buttonUp.justPressed;
+			rightP = VirtualPadCamera._pad.buttonRight.justPressed;
+			downP = VirtualPadCamera._pad.buttonDown.justPressed;
+			leftP = VirtualPadCamera._pad.buttonLeft.justPressed;
+		}
 
 		if (leftP)
 			noteMiss(0);
