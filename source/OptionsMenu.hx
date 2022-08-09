@@ -16,6 +16,7 @@ class OptionsMenu extends MusicBeatState
 	// i kinda jacked this menu to serve as a place to adjust flxvirtualpad positions, whoops
 
 	private var camHUD:FlxCamera;
+	private var camHitbox:FlxCamera;
 	private var camGame:FlxCamera;
 
 	private var padxPos = new FlxText(0, 0, 32);
@@ -72,10 +73,13 @@ class OptionsMenu extends MusicBeatState
 
 		camHUD = new FlxCamera();
 		camGame = new FlxCamera();
+		camHitbox = new FlxCamera();
 		camHUD.bgColor.alpha = 0;
+		camHitbox.bgColor.alpha = 0;
 
 		FlxG.cameras.reset(camGame);
 		FlxG.cameras.add(camHUD);
+		FlxG.cameras.add(camHitbox);
 
 		FlxCamera.defaultCameras = [camGame];
 
@@ -114,6 +118,7 @@ class OptionsMenu extends MusicBeatState
 		hitbox = new Hitbox();
 		hitbox.visible = false;
 		add(hitbox);
+		hitbox.cameras = [camHitbox];
 
 		//////////
 		// DPAD //
